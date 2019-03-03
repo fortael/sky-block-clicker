@@ -1,0 +1,6 @@
+{
+  "generator-phaser": {
+    "projectName": "phaser-game",
+    "gameFolder": "boilerplate"
+  }
+}
