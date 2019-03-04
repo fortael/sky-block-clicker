@@ -48,9 +48,6 @@ export default class BootState extends Phaser.State {
         // });
 
         this.prepareWorld();
-
-        this.game.ui = this.game.add.group(null, 'ui', true);
-        this.game.toolbar = new Toolbar(this.game);
     }
 
 

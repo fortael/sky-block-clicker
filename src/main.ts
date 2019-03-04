@@ -1,8 +1,8 @@
 import BootState from './states/BootState'
 import PreloadState from './states/PreloadState'
 import GameState from './states/GameState'
-import Toolbar from "./utils/toolbar";
-import { TilesGroup } from "./utils/phaser";
+import { TilesGroup } from "./utils/TileGroup";
+import ToolbarUi from "./ui/ToolbarUi";
 
 interface GameScoreInterface {
     value: number,
@@ -13,7 +13,8 @@ export default class Main extends Phaser.Game {
 
     public draggable: Phaser.Sprite = null;
     public ui: Phaser.Group;
-    public toolbar: Toolbar;
+    public toolbar: ToolbarUi;
+
     public speed: number = 1;
     public tick: Phaser.Signal;
 
@@ -28,14 +29,23 @@ export default class Main extends Phaser.Game {
     constructor() {
         super(window.innerWidth, window.innerHeight, Phaser.AUTO, null, null, null, true);
 
+
+    }
+
+    public boot(): void {
+        super.boot();
+
         this.state.add('boot', BootState, false);
         this.state.add('preloader', PreloadState, false);
         this.state.add('game', GameState, false);
 
-        this.tick = new Phaser.Signal();
+        this.ui = this.add.group(null, 'ui', true);
+        this.toolbar = new ToolbarUi(this);
 
+        this.tick = new Phaser.Signal();
         this.state.start('boot');
     }
+
 
     public makeText(text: string, group?: Phaser.Group | Phaser.Stage | Phaser.Stage, fontSize: number = 25) {
         let tmp: Phaser.Text = this.add.text(0, 0, text, {
@@ -78,21 +88,6 @@ export default class Main extends Phaser.Game {
         return group;
     }
 
-    spriteBorder(sprite: Phaser.Sprite | Phaser.Text, group?: Phaser.Group | Phaser.Stage): Phaser.Graphics {
-        let border = this.add.graphics(sprite.position.x, sprite.position.y, group);
-
-
-        border.lineStyle(1, 0xffffff);
-        border.drawRect(0, 0, sprite.width, sprite.height);
-
-        // if (sprite instanceof Phaser.Sprite) {
-        //     border.lineStyle(1, 0xff0000)
-        //     border.drawRect(0, 0, sprite.width / this.resolution, sprite.height / this.resolution);
-        // }
-
-        return border;
-    }
-
     spriteEmitter(sprite: Phaser.Sprite, size: number, maxSize: number = 1, colors: Array<number> = null): Phaser.Particles.Arcade.Emitter {
         let particles = 4000 / this.resolution;
         let emitter = this.add.emitter(this.world.centerX, this.world.centerY, particles);
@@ -119,7 +114,7 @@ export default class Main extends Phaser.Game {
 
     public pickUp(sprite: Phaser.Sprite): void {
         this.draggable = this.cloneSprite(sprite);
-        this.zoomOut();
+        // this.zoomOut();
         this.moveDraggable();
     }
 
@@ -128,25 +123,6 @@ export default class Main extends Phaser.Game {
             this.draggable.destroy();
             this.draggable = null;
         }
-    }
-
-    public zoomIn() {
-        this.camera.scale.x = 3;
-        this.camera.scale.y = 3;
-
-        this.centerCamera();
-    }
-
-    public zoomOut() {
-        this.camera.scale.x = 1;
-        this.camera.scale.y = 1;
-
-        this.camera.unfollow();
-        this.centerCamera();
-    }
-
-    public centerCamera() {
-        this.world.camera.focusOnXY(this.world.bounds.width / 2, this.world.bounds.height / 2);
     }
 
     public nextByNext(group: TilesGroup, padding: number = 0): TilesGroup {
@@ -210,7 +186,7 @@ export default class Main extends Phaser.Game {
         if (this.input.activePointer.rightButton.isDown) {
             this.dropIt();
             this.camera.unfollow();
-            this.zoomOut();
+            // this.zoomOut();
         }
     }
 }

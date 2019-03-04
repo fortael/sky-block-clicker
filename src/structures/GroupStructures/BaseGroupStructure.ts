@@ -157,7 +157,7 @@ export default class BaseGroupStructure {
      * @param y
      */
     public makeBlock(id: number, x: number, y: number) {
-        return new BaseBlock(this.game, this.structureHook.makeBlock(id, x, y, this.group));
+        return this.structureHook.makeBlock(id, x, y, this.group);
     }
 
     /**
@@ -169,15 +169,6 @@ export default class BaseGroupStructure {
      * @param toY
      */
     public makeBlocks(id: number, fromX: number, fromY: number, toX: number, toY: number) {
-        let array: BaseBlock[] = [];
-
-        for (let x = fromX; x <= toX; x++) {
-            for (let y = fromY; y <= toY; y++) {
-                console.log(x);
-                array.push(this.makeBlock(id, x, y));
-            }
-        }
-
-        return array;
+        return this.structureHook.makeBlocks(id, fromX, fromY, toX, toY, this.group);
     }
 }

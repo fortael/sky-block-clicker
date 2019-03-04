@@ -1,7 +1,7 @@
 import Helpers from "./helpers";
 import Main from "./main";
 import config from "./config";
-import {TilesGroup} from "./utils/phaser";
+// import {TilesGroup} from "./utils/phaser";
 
 interface PlanetInterface {
     claimed: boolean,
@@ -34,7 +34,7 @@ export class Planet extends Phaser.Sprite implements PlanetInterface {
     ships: Array<Phaser.Sprite> = [];
 
     resources: Array<any>;
-    resourcesGroup: TilesGroup;
+    // resourcesGroup: TilesGroup;
 
     public fromSun: number;
 
@@ -85,23 +85,23 @@ export class Planet extends Phaser.Sprite implements PlanetInterface {
         this.animate()
     }
 
-    private _drawResources() {
-        this.resourcesGroup = new TilesGroup(this.game, null, 'planet', false);
-
-        this.resources.forEach((item: any) => {
-            this.resourcesGroup.addChild(
-                this.game.drawTextWithIcon(item.sprite, item.amount + '', 8, 1)
-            );
-        }, this);
-
-        this.resourcesGroup.addChild(
-            this.game.drawTextWithIcon('planet.plasma', this.fromSun + '', 8, 1)
-        );
-
-        this.resourcesGroup.placeOneByOne(this.game, 1);
-
-        this.game.add.existing(this.resourcesGroup);
-    }
+    // private _drawResources() {
+    //     this.resourcesGroup = new TilesGroup(this.game, null, 'planet', false);
+    //
+    //     this.resources.forEach((item: any) => {
+    //         this.resourcesGroup.addChild(
+    //             this.game.drawTextWithIcon(item.sprite, item.amount + '', 8, 1)
+    //         );
+    //     }, this);
+    //
+    //     this.resourcesGroup.addChild(
+    //         this.game.drawTextWithIcon('planet.plasma', this.fromSun + '', 8, 1)
+    //     );
+    //
+    //     this.resourcesGroup.placeOneByOne(this.game, 1);
+    //
+    //     this.game.add.existing(this.resourcesGroup);
+    // }
 
     onClick(sprite: Phaser.Sprite, some: any) {
         this.onHoverOut();
@@ -118,12 +118,12 @@ export class Planet extends Phaser.Sprite implements PlanetInterface {
             satellite.height /= 3;
 
             this.ships.push(satellite);
-            this._drawResources();
+            // this._drawResources();
 
             this.claimed = true;
         } else {
-            this.game.zoomIn();
-            this.game.camera.follow(sprite);
+            // this.game.zoomIn();
+            // this.game.camera.follow(sprite);
         }
     }
 
@@ -169,8 +169,8 @@ export class Planet extends Phaser.Sprite implements PlanetInterface {
         // console.log(this.resourcesGroup.width / res);
 
         if (this.claimed) {
-            this.resourcesGroup.position.x = this.centerX - (this.resourcesGroup.totalWidth / 2);
-            this.resourcesGroup.position.y = this.centerY - (this.resourcesGroup.height / 2 / res) + this.height / 2;
+            // this.resourcesGroup.position.x = this.centerX - (this.resourcesGroup.totalWidth / 2);
+            // this.resourcesGroup.position.y = this.centerY - (this.resourcesGroup.height / 2 / res) + this.height / 2;
         }
 
 

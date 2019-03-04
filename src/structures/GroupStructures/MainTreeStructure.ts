@@ -6,26 +6,28 @@ import { BLOCK_LEAVES, BLOCK_WOOD } from "../../hooks/StructuresHook";
 export default class MainTreeStructure extends BaseGroupStructure {
 
     create() {
-        const { structureHook, group, game } = this;
+        const { pivotX, pivotY } = this;
 
+        this.regeneratable = true;
+        this.regenerateTimeout = 50;
+
+        //ствол
         this.observe([
-            ...this.makeBlocks(BLOCK_WOOD, this.pivotX, this.pivotY, this.pivotX, this.pivotY + 5)
+            ...this.makeBlocks(BLOCK_WOOD, pivotX, pivotY, pivotX, pivotY + 5)
         ]);
+
+        //листья
         this.observe([
-            ...this.makeBlocks(BLOCK_LEAVES, this.pivotX - 2, this.pivotY + 4, this.pivotX + 2, this.pivotY + 4),
-            ...this.makeBlocks(BLOCK_LEAVES, this.pivotX - 2, this.pivotY + 5, this.pivotX + 2, this.pivotY + 5),
-            ...this.makeBlocks(BLOCK_LEAVES, this.pivotX - 1, this.pivotY + 6, this.pivotX + 1, this.pivotY + 6),
-            ...this.makeBlocks(BLOCK_LEAVES, this.pivotX - 1, this.pivotY + 7, this.pivotX + 1, this.pivotY + 7),
+            ...this.makeBlocks(BLOCK_LEAVES, pivotX - 1, pivotY + 6, pivotX + 1, pivotY + 7),
+            ...this.makeBlocks(BLOCK_LEAVES, pivotX - 2, pivotY + 4, pivotX + 2, pivotY + 5),
         ]);
     }
 
     onReady() {
-        this.regeneratable = true;
-        this.regenerateTimeout = 50;
+
     }
 
     onDestroyed() {
-        super.onDestroyed();
-        console.log('destroyed TOTAL');
+
     }
 }

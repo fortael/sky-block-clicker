@@ -37,8 +37,6 @@ export default class EffectsHook extends BaseHook {
         const { game, world } = this;
         const color = 0x24ff00;
 
-        console.log(game.world.height);
-
         game.add
             .graphics(0, 0, world)
             .beginFill(color)

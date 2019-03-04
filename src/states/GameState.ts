@@ -1,4 +1,3 @@
-import { PlanetsArray } from "../data/Blocks";
 import Main from "../main";
 
 import StructuresHook from "../hooks/StructuresHook";
@@ -41,11 +40,11 @@ class GameState extends Phaser.State {
             .spawnIsland1();
 
         const cookie = new MainCookieBlock(game, this.StructuresHook.spawnMainCookie());
-
-        new MainTreeStructure(game, this.StructuresHook, 36, 32);
-        // const tree = new MainCookieBlock(game, this.StructuresHook.spawnMainTree());
-
         cookie.onHover();
+
+        new MainTreeStructure(game, this.StructuresHook, 35, 32);
+
+        // new ToolbarUi(game);
         // this.EffectsHook.debugGrid(true);
         // this.EffectsHook.particlesEmitter();
 
@@ -75,7 +74,7 @@ class GameState extends Phaser.State {
         // border2.beginFill(0xff0000, .3);
         // border2.drawCircle(0, 0, radius + (230 / this.game.resolution));
 
-        this.game.toolbar.render();
+        // this.game.toolbar.render();
 
         this.drawStat();
 
