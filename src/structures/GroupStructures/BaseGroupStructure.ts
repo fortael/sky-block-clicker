@@ -1,22 +1,18 @@
 import Main from "../../main";
-import { borderSquare } from "../../utils/phaser";
 import StructuresHook from "../../hooks/StructuresHook";
-import BaseStructure from "../BaseStructure";
+import BaseBlock from "../BaseBlock";
 
-export default class BaseGroupedStructure {
+export default class BaseGroupStructure {
 
     protected game: Main;
     protected group: Phaser.Group;
     protected structureHook: StructuresHook;
-    protected observable: BaseStructure[] = [];
+    protected observable: BaseBlock[] = [];
 
-    protected health: number = 1;
     protected regeneratable: boolean = false;
 
     protected regenerateTimeout: number = 0;
     private regenerateTimeoutCounter: number = 0;
-
-    private hover: Phaser.Graphics = null;
 
     constructor(game: Main, structureHook: StructuresHook, startX: number, startY: number) {
         this.game = game;
@@ -26,44 +22,72 @@ export default class BaseGroupedStructure {
         this.create();
 
         this.game.tick.add(() => {
-            console.log('tick');
             this.regen();
         });
 
         this.onReady();
     }
 
+    /**
+     * Создание
+     */
     public create() {
 
     }
 
+    /**
+     * Событие при первом создании структуры в мире
+     */
     public onReady() {
     }
 
+    /**
+     * Событие при уничтожении объекта
+     */
     public onDestroyed() {
         this.regenerateTimeoutCounter = this.regenerateTimeout;
     }
 
+    /**
+     * Событие при восстановлении объекта
+     */
     public onRespawn() {
 
     }
 
+    /**
+     * Уничтожить каждый блок в структуре
+     */
     public destroy() {
-        console.log('destroy');
+        this.observable.forEach((item: BaseBlock) => {
+            if (!item.isDestroyed()) {
+                item.destroy();
+            }
+        });
+
+        this.regenerateTimeoutCounter = this.regenerateTimeout;
+
+        this.onDestroyed();
     }
 
+    /**
+     * Восстановить каждый блок в структуре
+     */
     public respawn() {
-        this.observable.forEach((item: BaseStructure) => {
+        this.observable.forEach((item: BaseBlock) => {
             item.respawn();
         });
 
         this.onRespawn();
     }
 
+    /**
+     * Вся структура целиком уничтожена
+     */
     public isDestroyed() {
         let isDestroyed = true;
 
-        this.observable.forEach((item: BaseStructure) => {
+        this.observable.forEach((item: BaseBlock) => {
             if (!item.isDestroyed()) {
                 isDestroyed = false;
             }
@@ -72,8 +96,10 @@ export default class BaseGroupedStructure {
         return isDestroyed;
     }
 
-    public regen()
-    {
+    /**
+     * Пытается восстановить структуру по таймауту, когда она целиком уничтожена
+     */
+    public regen() {
         if (this.regeneratable && this.isDestroyed()) {
             if (this.regenerateTimeoutCounter > 0) {
                 this.regenerateTimeoutCounter--;
@@ -86,10 +112,20 @@ export default class BaseGroupedStructure {
         return this;
     }
 
-    protected observe(array: BaseStructure[], onDestroyed: {(): void;} = () => {}, onAllDestroyed: {(): void;} = () => {}) {
+    /**
+     * Зарегестрировать группу интерактивных блоков внутри объекта
+     * @param array
+     * @param onDestroyed
+     * @param onAllDestroyed
+     */
+    protected observe(
+        array: BaseBlock[],
+        onDestroyed: { (): void; } = () => {},
+        onAllDestroyed: { (): void; } = () => {}
+    ) {
         let count = array.length;
 
-        array.forEach((item: BaseStructure) => {
+        array.forEach((item: BaseBlock) => {
             item.onDestroyed = () => {
                 count--;
                 onDestroyed();
@@ -99,7 +135,7 @@ export default class BaseGroupedStructure {
                 }
 
                 if (this.isDestroyed()) {
-                    this.onDestroyed();
+                    this.destroy(); //вызываем уничтожении, чтобы сбросить счетчик и вызвать эвент
                 }
             };
 

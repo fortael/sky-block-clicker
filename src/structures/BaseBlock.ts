@@ -1,7 +1,7 @@
 import Main from "../main";
 import { borderSquare } from "../utils/phaser";
 
-export default class BaseStructure {
+export default class BaseBlock {
 
     protected game: Main;
     protected sprite: Phaser.Sprite;
@@ -18,6 +18,8 @@ export default class BaseStructure {
         this.game = game;
         this.sprite = sprite;
 
+        this.create();
+
         this.sprite.inputEnabled = true;
         this.sprite.events.onInputDown.add(this.onClick, this);
         this.sprite.events.onInputOver.add(this.onHover, this);
@@ -30,13 +32,75 @@ export default class BaseStructure {
         this.onReady();
     }
 
+    /**
+     * Создание
+     */
+    public create() {
+
+    }
+
+    /**
+     * Событие после первого спавна блока в мире
+     */
     public onReady() {
     }
 
+    /**
+     * Событие при уничтожении блока
+     */
     public onDestroyed() {
     }
 
+    /**
+     * Событие при восстановлении блока
+     */
     public onRespawn() {
+    }
+
+    /**
+     * Уничтожает блок и сбрасывает кулдаун автореспавна
+     */
+    public destroy() {
+        this.health = 0;
+        this.sprite.exists = false;
+        this.regenerateTimeoutCounter = this.regenerateTimeout;
+        this.onDestroyed();
+
+        return this;
+    }
+
+    /**
+     * Восстанавливает блок
+     */
+    public respawn() {
+        this.health = 1;
+        this.sprite.exists = true;
+        this.onRespawn();
+
+        return this;
+    }
+
+    /**
+     * Блок уничтожен
+     */
+    public isDestroyed() {
+        return this.health <= 0;
+    }
+
+    /**
+     * Пытается восстановить блок по таймауту
+     */
+    public regen()
+    {
+        if (this.regeneratable && this.isDestroyed()) {
+            if (this.regenerateTimeoutCounter > 0) {
+                return this.regenerateTimeoutCounter--;
+            }
+
+            this.respawn();
+        }
+
+        return this;
     }
 
     public onClick() {
@@ -52,39 +116,5 @@ export default class BaseStructure {
 
     public onHoverOut() {
         this.hover !== null ? this.hover.destroy() : null;
-    }
-
-    public destroy() {
-        this.health = 0;
-        this.sprite.exists = false;
-        this.regenerateTimeoutCounter = this.regenerateTimeout;
-        this.onDestroyed();
-
-        return this;
-    }
-
-    public respawn() {
-        this.health = 1;
-        this.sprite.exists = true;
-        this.onRespawn();
-
-        return this;
-    }
-
-    public isDestroyed() {
-        return this.health <= 0;
-    }
-
-    public regen()
-    {
-        if (this.regeneratable && this.isDestroyed()) {
-            if (this.regenerateTimeoutCounter > 0) {
-                return this.regenerateTimeoutCounter--;
-            }
-
-            this.respawn();
-        }
-
-        return this;
     }
 }

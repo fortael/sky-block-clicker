@@ -1,8 +1,11 @@
-import BaseStructure from "./BaseStructure";
+import BaseBlock from "./BaseBlock";
 
-export default class MainCookieStructure extends BaseStructure {
+/**
+ * Главный блок в центре
+ */
+export default class MainCookieBlock extends BaseBlock {
 
-    onReady() {
+    create() {
         this.regeneratable = true;
         this.regenerateTimeout = 5;
     }

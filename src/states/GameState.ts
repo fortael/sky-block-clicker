@@ -1,12 +1,11 @@
 import { PlanetsArray } from "../data/Blocks";
 import Main from "../main";
-import { AbstractPlanet } from "../planets/AbstractPlanet";
 
 import StructuresHook from "../hooks/StructuresHook";
 import WorldEffects from "../hooks/EffectsHook";
 import Camera from "../hooks/CameraHook";
-import MainCookieStructure from "../structures/MainCookieStructure";
-import MainTreeGroup from "../structures/GroupStructures/MainTreeGroup";
+import MainCookieBlock from "../structures/MainCookieBlock";
+import MainTreeStructure from "../structures/GroupStructures/MainTreeStructure";
 
 let moveUp: Phaser.Key, moveLeft: Phaser.Key, moveRight: Phaser.Key, moveDown: Phaser.Key;
 let zoomIn: Phaser.Key, zoomOut: Phaser.Key;
@@ -41,10 +40,10 @@ class GameState extends Phaser.State {
             .spawnBaseLevel()
             .spawnIsland1();
 
-        const cookie = new MainCookieStructure(game, this.StructuresHook.spawnMainCookie());
+        const cookie = new MainCookieBlock(game, this.StructuresHook.spawnMainCookie());
 
-        new MainTreeGroup(game, this.StructuresHook, 36, 32);
-        // const tree = new MainCookieStructure(game, this.StructuresHook.spawnMainTree());
+        new MainTreeStructure(game, this.StructuresHook, 36, 32);
+        // const tree = new MainCookieBlock(game, this.StructuresHook.spawnMainTree());
 
         cookie.onHover();
         // this.EffectsHook.debugGrid(true);
@@ -60,9 +59,6 @@ class GameState extends Phaser.State {
 
         // this.Planets = WorldGen.SpawnPlanets(game);
         // this.Sun = new Sun(this.game);
-
-
-        // new AbstractPlanet(game);
 
 
         // let radius = this.Sun.width / game.resolution;
