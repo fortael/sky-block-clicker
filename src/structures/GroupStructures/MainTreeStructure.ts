@@ -9,33 +9,13 @@ export default class MainTreeStructure extends BaseGroupStructure {
         const { structureHook, group, game } = this;
 
         this.observe([
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_WOOD, 36, 32, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_WOOD, 36, 33, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_WOOD, 36, 34, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_WOOD, 36, 35, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_WOOD, 36, 36, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_WOOD, 36, 37, group)),
+            ...this.makeBlocks(BLOCK_WOOD, this.pivotX, this.pivotY, this.pivotX, this.pivotY + 5)
         ]);
-
         this.observe([
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 34, 36, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 35, 36, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 36, 36, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 37, 36, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 38, 36, group)),
-
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 34, 37, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 35, 37, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 36, 37, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 37, 37, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 38, 37, group)),
-
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 35, 38, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 36, 38, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 37, 38, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 35, 39, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 36, 39, group)),
-            new BaseBlock(game, structureHook.makeBlock(BLOCK_LEAVES, 37, 39, group)),
+            ...this.makeBlocks(BLOCK_LEAVES, this.pivotX - 2, this.pivotY + 4, this.pivotX + 2, this.pivotY + 4),
+            ...this.makeBlocks(BLOCK_LEAVES, this.pivotX - 2, this.pivotY + 5, this.pivotX + 2, this.pivotY + 5),
+            ...this.makeBlocks(BLOCK_LEAVES, this.pivotX - 1, this.pivotY + 6, this.pivotX + 1, this.pivotY + 6),
+            ...this.makeBlocks(BLOCK_LEAVES, this.pivotX - 1, this.pivotY + 7, this.pivotX + 1, this.pivotY + 7),
         ]);
     }
 
