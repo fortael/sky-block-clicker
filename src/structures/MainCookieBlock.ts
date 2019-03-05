@@ -11,6 +11,6 @@ export default class MainCookieBlock extends BaseBlock {
     }
 
     onDestroyed() {
-        this.game.global.stats.cobblestone.value += 1;
+        this.game.store.inventory.cobblestone += 1;
     }
 }

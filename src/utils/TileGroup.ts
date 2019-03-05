@@ -12,7 +12,7 @@ export class TilesGroup extends Phaser.Group {
     // }/
 
     public horizontalCenter() {
-        this.position.x = this.game.world.centerX - this.totalWidth / 2;
+        this.position.x = (this.game.width - this.totalWidth) / 2;
     }
 
     public verticalCenter() {
@@ -50,7 +50,7 @@ export class TilesGroup extends Phaser.Group {
 
 
         this.forEach((sprite: Phaser.Sprite | Phaser.Text | TilesGroup) => {
-            if (!(sprite instanceof TilesGroup)) {
+            if (!(sprite instanceof Phaser.Group)) {
                 sprite.anchor.set(0, 0);
             }
 

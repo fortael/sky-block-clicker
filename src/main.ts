@@ -3,19 +3,23 @@ import PreloadState from './states/PreloadState'
 import GameState from './states/GameState'
 import { TilesGroup } from "./utils/TileGroup";
 import ToolbarUi from "./ui/ToolbarUi";
+import StoreHook from "./hooks/StoreHook";
+import { makeTile } from "./utils/phaser";
+import { BLOCK_COBBLESTONE } from "./hooks/StructuresHook";
+import Store from "./store";
 
 interface GameScoreInterface {
     value: number,
     text: Phaser.Text,
+    sprite: Phaser.Sprite,
 }
 
 export default class Main extends Phaser.Game {
 
     public draggable: Phaser.Sprite = null;
     public ui: Phaser.Group;
-    public toolbar: ToolbarUi;
+    public store: Store;
 
-    public speed: number = 1;
     public tick: Phaser.Signal;
 
     public toCloseToSun: number = 0;
@@ -28,8 +32,6 @@ export default class Main extends Phaser.Game {
 
     constructor() {
         super(window.innerWidth, window.innerHeight, Phaser.AUTO, null, null, null, true);
-
-
     }
 
     public boot(): void {
@@ -40,8 +42,8 @@ export default class Main extends Phaser.Game {
         this.state.add('game', GameState, false);
 
         this.ui = this.add.group(null, 'ui', true);
-        this.toolbar = new ToolbarUi(this);
 
+        this.store = new Store();
         this.tick = new Phaser.Signal();
         this.state.start('boot');
     }
@@ -123,41 +125,6 @@ export default class Main extends Phaser.Game {
             this.draggable.destroy();
             this.draggable = null;
         }
-    }
-
-    public nextByNext(group: TilesGroup, padding: number = 0): TilesGroup {
-        let prev: Phaser.Sprite | TilesGroup = null;
-        let spriteWidth = 0;
-        let total = 0;
-
-        padding /= this.resolution;
-
-
-        group.forEach((sprite: Phaser.Sprite | Phaser.Text | TilesGroup) => {
-
-            if (!(sprite instanceof TilesGroup)) {
-                sprite.anchor.set(0, 0);
-            }
-
-            spriteWidth = sprite instanceof TilesGroup
-                ? sprite.totalWidth
-                : sprite.width;
-
-            if (prev === null) {
-                sprite.position.x = 0;
-                total = spriteWidth - 1;
-            } else {
-                sprite.position.x = (total) + padding;
-                // sprite.position.x += Math.round(sprite.position.x) - sprite.position.x;
-                total += padding + spriteWidth - 1;
-            }
-
-            prev = sprite;
-        }, this);
-
-        group.totalWidth = total;
-
-        return group;
     }
 
     public cloneSprite(sprite: Phaser.Sprite): Phaser.Sprite {

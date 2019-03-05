@@ -1,12 +1,15 @@
 import BaseHook from "./BaseHook";
 import BaseBlock from "../structures/BaseBlock";
 
+import { makeTile } from "../utils/phaser";
+
 export const BLOCK_GRASS = 4;
 export const BLOCK_COBBLESTONE = 25;
 export const BLOCK_WOOD = 29;
 export const BLOCK_LAVA_FLUID = 94;
 export const BLOCK_WATER_FLUID = 95;
 export const BLOCK_LEAVES = 140;
+export const BLOCK_SAPLING = 16;
 
 export default class StructuresHook extends BaseHook {
 
@@ -68,8 +71,10 @@ export default class StructuresHook extends BaseHook {
      */
     public makeTile(id: number, cordX: number = 0, cordY: number = 0, group?: Phaser.Group | null) {
         const { x, y } = StructuresHook.getCordsByXY(cordX, cordY);
-        const block = this.game.add.sprite(x, y, 'sheet', id - 1, group);
+        const block = makeTile(this.game, id, group);
 
+        block.x = x;
+        block.y = y;
         block.width = 64;
         block.height = 64;
         block.smoothed = false;

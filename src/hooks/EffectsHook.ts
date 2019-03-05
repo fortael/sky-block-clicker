@@ -28,6 +28,8 @@ export default class EffectsHook extends BaseHook {
 
         this.game.add.sprite(world.bounds.topLeft.x, 0, myBitmap);
         this.game.add.image(this.world.bounds.topLeft.x, 0, 'sky').anchor.set(0);
+
+        return this;
     }
 
     /**
@@ -56,6 +58,8 @@ export default class EffectsHook extends BaseHook {
             .graphics(0, 0, world)
             .beginFill(color)
             .drawRect(world.bounds.topLeft.x, world.bounds.bottomLeft.y - 2, game.world.width, 2);
+
+        return this;
     }
 
     public particlesEmitter() {

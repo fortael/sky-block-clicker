@@ -15,3 +15,28 @@ export function borderSquare(game: Phaser.Game, sprite: Phaser.Sprite) {
 
     return hover;
 }
+
+export function makeTile(game: Phaser.Game, id: number, group?: Phaser.Group | null): Phaser.Sprite {
+    const block = game.add.sprite(0, 0, 'sheet', id - 1, group);
+
+    block.width = 64;
+    block.height = 64;
+    block.smoothed = false;
+
+    return block;
+}
+
+export function makeText(game: Phaser.Game, value: string, fontSize: number = 18, group?: Phaser.Group | Phaser.Stage | Phaser.Stage) {
+    const text = game.add.text(0, 0, value, {
+        font: 'Arial',
+        fontSize: fontSize,
+        fill: '#ffffff',
+        align: 'left',
+        stroke: '#000000',
+        strokeThickness: 2,
+    }, group);
+
+    text.resolution = window.devicePixelRatio;
+
+    return text;
+}

@@ -5,6 +5,8 @@ import WorldEffects from "../hooks/EffectsHook";
 import Camera from "../hooks/CameraHook";
 import MainCookieBlock from "../structures/MainCookieBlock";
 import MainTreeStructure from "../structures/GroupStructures/MainTreeStructure";
+import { makeTile } from "../utils/phaser";
+import ToolbarUi from "../ui/ToolbarUi";
 
 let moveUp: Phaser.Key, moveLeft: Phaser.Key, moveRight: Phaser.Key, moveDown: Phaser.Key;
 let zoomIn: Phaser.Key, zoomOut: Phaser.Key;
@@ -15,6 +17,7 @@ class GameState extends Phaser.State {
     public StructuresHook: StructuresHook;
     public EffectsHook: WorldEffects;
     public CameraHook: Camera;
+    public ToolbarUi: ToolbarUi;
 
     public game: Main;
 
@@ -26,14 +29,18 @@ class GameState extends Phaser.State {
         this.StructuresHook = new StructuresHook(game, world);
         this.EffectsHook = new WorldEffects(game, world);
         this.CameraHook = new Camera(game, world);
+        this.ToolbarUi = new ToolbarUi(game);
     }
 
     create() {
         let game = this.game;
 
-        this.CameraHook.centerCamera();
-        this.EffectsHook.drawBackgroundGradient();
-        this.EffectsHook.drawBorders();
+        this.CameraHook
+            .centerCamera();
+
+        this.EffectsHook
+            .drawBackgroundGradient()
+            .drawBorders();
 
         this.StructuresHook
             .spawnBaseLevel()
@@ -56,30 +63,10 @@ class GameState extends Phaser.State {
         zoomIn = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         zoomOut = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 
-        // this.Planets = WorldGen.SpawnPlanets(game);
-        // this.Sun = new Sun(this.game);
-
-
-        // let radius = this.Sun.width / game.resolution;
-
-        // this.game.toCloseToSun = radius + (200);
-
-        // let border = this.add.graphics(this.Sun.position.x, this.Sun.position.y);
-        //
-        // border.beginFill(0xff0000, .3);
-        // border.drawCircle(0, 0, radius + (400 / this.game.resolution));
-
-        // let border2 = this.add.graphics(this.Sun.position.x, this.Sun.position.y);
-        //
-        // border2.beginFill(0xff0000, .3);
-        // border2.drawCircle(0, 0, radius + (230 / this.game.resolution));
-
-        // this.game.toolbar.render();
 
         this.drawStat();
 
         this.game.tick.active = true;
-
         this.game.time.events.repeat(Phaser.Timer.SECOND / 10, Infinity, () => {
             this.game.tick.dispatch();
             this.updateStat();
@@ -112,9 +99,8 @@ class GameState extends Phaser.State {
     }
 
     updateStat() {
-        for (let item in this.game.global.stats) {
-            this.game.global.stats[item].text.setText(this.game.global.stats[item].value);
-        }
+        this.ToolbarUi.render();
+        // console.log(1);
     }
 
     drawStat() {

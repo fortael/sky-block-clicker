@@ -11,13 +11,14 @@ export default class BaseUi {
         this.group = new TilesGroup(this.game, this.game.ui);
 
         this.create();
+        this.render();
     }
 
     public create() {
 
     }
 
-    public postTo(x: number, y: number) {
+    public render() {
 
     }
 }

@@ -15,37 +15,10 @@ export default class BootState extends Phaser.State {
 
         this.load.image('sky', 'assets/sky.jpg');
         this.load.image('button', 'assets/button.png');
-        this.load.image('ship', 'assets/ship.png');
-        this.load.image('crystal', 'assets/crystal.png');
-        this.load.image('sun', `assets/planets/sun.png`);
 
         this.load.image('star', `assets/start.png`);
 
-
-        this.load.image('lava', `assets/blocks/lava.gif`);
-        this.load.image('water', `assets/blocks/water.gif`);
-
         this.load.spritesheet('sheet', 'assets/blocks/blocks.png', 16, 16);
-
-        // PlanetsArray.forEach((item) => {
-        //     this.load.image(`planet.${item.type}`, item.texture);
-        // });
-
-        let ships = <any>{
-            'ship.miner': 'assets/ships/miner.png'
-        };
-
-        for (let item in ships) {
-            if (ships.hasOwnProperty(item)) this.load.image(item, ships[item]);
-        }
-        // Object.keys().forEach((item) => {
-        //     this.load.image(`ship.${item}`, item.texture);
-        // });
-
-        // Object.keys(ShipsScope).forEach((item) => {
-        //     console.log(item);
-        // this.load.image(`ship.${ShipsScope[item].name}`, ShipsScope[item].texture);
-        // });
 
         this.prepareWorld();
     }
