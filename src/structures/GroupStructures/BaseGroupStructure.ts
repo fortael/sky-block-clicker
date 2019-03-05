@@ -125,8 +125,8 @@ export default class BaseGroupStructure {
     /**
      * Зарегестрировать группу интерактивных блоков внутри объекта
      * @param array
-     * @param onDestroyed
-     * @param onAllDestroyed
+     * @param onDestroyed - Срабатывает по удалению 1 блока
+     * @param onAllDestroyed - Срабатывает, когда все блоки из массива были удалены
      */
     public observe(
         array: BaseBlock[],
@@ -143,7 +143,6 @@ export default class BaseGroupStructure {
                     onDestroyed(count);
 
                     if (count <= 0) {
-                        console.log(`count reset to: ${countStart}`);
                         count = countStart;
                         onAllDestroyed();
                     }

@@ -5,7 +5,6 @@ import WorldEffects from "../hooks/EffectsHook";
 import Camera from "../hooks/CameraHook";
 import MainCookieBlock from "../structures/MainCookieBlock";
 import MainTreeStructure from "../structures/GroupStructures/MainTreeStructure";
-import { makeTile } from "../utils/phaser";
 import ToolbarUi from "../ui/ToolbarUi";
 
 let moveUp: Phaser.Key, moveLeft: Phaser.Key, moveRight: Phaser.Key, moveDown: Phaser.Key;
@@ -50,6 +49,7 @@ class GameState extends Phaser.State {
         cookie.onHover();
 
         new MainTreeStructure(game, this.StructuresHook, 35, 32);
+        new MainTreeStructure(game, this.StructuresHook, 41, 32);
 
         // new ToolbarUi(game);
         // this.EffectsHook.debugGrid(true);
@@ -63,8 +63,6 @@ class GameState extends Phaser.State {
         zoomIn = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         zoomOut = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 
-
-        this.drawStat();
 
         this.game.tick.active = true;
         this.game.time.events.repeat(Phaser.Timer.SECOND / 10, Infinity, () => {
@@ -101,23 +99,6 @@ class GameState extends Phaser.State {
     updateStat() {
         this.ToolbarUi.render();
         // console.log(1);
-    }
-
-    drawStat() {
-        let icon = this.add.sprite(50, 50, 'crystal', null, this.game.ui);
-        icon.height = icon.width = 50;
-        icon.anchor.set(.5, .5);
-
-        this.game.global.stats.cobblestone.value = 0;
-        this.game.global.stats.cobblestone.text = this.add.text(70, 55, "0", {
-            font: '25px Arial',
-            fill: '#ffffff',
-            align: 'left'
-        }, this.game.ui);
-        this.game.global.stats.cobblestone.text.anchor.set(0, .5);
-        // last.position.x +=first.totalWidth;
-
-        // this.game.nextByNext(gr);
     }
 
     pause() {
