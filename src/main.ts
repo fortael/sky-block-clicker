@@ -2,10 +2,6 @@ import BootState from './states/BootState'
 import PreloadState from './states/PreloadState'
 import GameState from './states/GameState'
 import { TilesGroup } from "./utils/TileGroup";
-import ToolbarUi from "./ui/ToolbarUi";
-import StoreHook from "./hooks/StoreHook";
-import { makeTile } from "./utils/phaser";
-import { BLOCK_COBBLESTONE } from "./hooks/StructuresHook";
 import Store from "./store";
 
 interface GameScoreInterface {

@@ -9,6 +9,8 @@ export default class BaseGroupStructure {
     protected structureHook: StructuresHook;
     protected observable: BaseBlock[] = [];
 
+    protected temporarySprites:Phaser.Sprite[] = [];
+
     protected regeneratable: boolean = false;
 
     protected pivotX: number = 0;
@@ -58,7 +60,9 @@ export default class BaseGroupStructure {
      * Событие при восстановлении объекта
      */
     public onRespawn() {
-
+        this.temporarySprites.forEach((item:Phaser.Sprite) => {
+            item.destroy();
+        });
     }
 
     /**
@@ -126,28 +130,33 @@ export default class BaseGroupStructure {
      */
     public observe(
         array: BaseBlock[],
-        onDestroyed: { (): void; } = () => {},
+        onDestroyed: { (remain:number): void; } = () => {},
         onAllDestroyed: { (): void; } = () => {}
     ) {
-        let count = array.length;
+        return (function (ctx) {
+            let count = array.length;
+            let countStart = array.length;
 
-        array.forEach((item: BaseBlock) => {
-            item.onDestroyed = () => {
-                count--;
-                onDestroyed();
+            array.forEach((item: BaseBlock) => {
+                item.onDestroyed = () => {
+                    count--;
+                    onDestroyed(count);
 
-                if (count <= 0) {
-                    onAllDestroyed();
-                }
+                    if (count <= 0) {
+                        console.log(`count reset to: ${countStart}`);
+                        count = countStart;
+                        onAllDestroyed();
+                    }
 
-                if (this.isDestroyed()) {
-                    this.destroy(); //вызываем уничтожении, чтобы сбросить счетчик и вызвать эвент
-                }
-            };
+                    if (ctx.isDestroyed()) {
+                        ctx.destroy(); //вызываем уничтожении, чтобы сбросить счетчик и вызвать эвент
+                    }
+                };
 
 
-            this.observable.push(item);
-        });
+                ctx.observable.push(item);
+            });
+        })(this);
     }
 
     /**
