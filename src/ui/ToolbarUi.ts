@@ -1,30 +1,24 @@
-import BaseUi from "./BaseUi";
+import { BLOCK_COBBLESTONE, BLOCK_SAPLING, BLOCK_WOOD } from "../hooks/StructuresHook";
 import { makeText, makeTile } from "../utils/phaser";
-import { BLOCK_COBBLESTONE, BLOCK_WOOD, BLOCK_SAPLING } from "../hooks/StructuresHook";
+import BaseUi from "./BaseUi";
+import { debounce } from "lodash";
 
 export default class ToolbarUi extends BaseUi {
 
     public create() {
-        const { group, game } = this;
+        const {group, game} = this;
 
-        group.addChild(this.makeItem(BLOCK_COBBLESTONE, function () {
-            return game.store.inventory.cobblestone;
-        }));
-        group.addChild(this.makeItem(BLOCK_WOOD, function () {
-            return game.store.inventory.wood;
-        }));
-        group.addChild(this.makeItem(BLOCK_SAPLING, function () {
-            return game.store.inventory.sapling;
-        }));
+        group.addChild(this.makeItem(BLOCK_COBBLESTONE, () => game.store.inventory.cobblestone));
+        group.addChild(this.makeItem(BLOCK_WOOD, () => game.store.inventory.wood));
+        group.addChild(this.makeItem(BLOCK_SAPLING, () => game.store.inventory.sapling));
 
         group.placeInRow();
-        group.horizontalCenter();
-        group.verticalBottom( 20);
-        group.exists = true;
+        this.resize();
+
+        game.scale.setResizeCallback(debounce(this.resize, 100), this);
     }
 
-    public makeItem(id: number, getValue: { (): string; } = () => '')
-    {
+    public makeItem(id: number, getValue: () => string = () => "") {
         const group = new Phaser.Group(this.game);
         const slot = this.group.makeBasicSquare(64);
         const tile = makeTile(this.game, id);
@@ -44,10 +38,15 @@ export default class ToolbarUi extends BaseUi {
         group.addChild(tile);
         group.addChild(text);
 
-        this.game.tick.add(function () {
+        this.game.tick.add(() => {
             text.setText(getValue());
         });
 
         return group;
+    }
+
+    public resize() {
+        this.group.horizontalCenter();
+        this.group.verticalBottom(20);
     }
 }

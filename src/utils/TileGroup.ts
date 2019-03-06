@@ -23,11 +23,11 @@ export class TilesGroup extends Phaser.Group {
         this.position.y = this.game.height - this.height - padding;
     }
 
-    public placeOneByOne(padding:number = 0) {
+    public placeOneByOne(padding: number = 0) {
         this.placeInRow(padding);
     }
 
-    public posTo(x:number, y:number) {
+    public posTo(x: number, y: number) {
         this.position.x = x;
         this.position.y = y;
 

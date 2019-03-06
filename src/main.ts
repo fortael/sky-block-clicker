@@ -1,13 +1,13 @@
-import BootState from './states/BootState'
-import PreloadState from './states/PreloadState'
-import GameState from './states/GameState'
-import { TilesGroup } from "./utils/TileGroup";
+import BootState from "./states/BootState";
+import GameState from "./states/GameState";
+import PreloadState from "./states/PreloadState";
 import Store from "./store";
+import { TilesGroup } from "./utils/TileGroup";
 
 interface GameScoreInterface {
-    value: number,
-    text: Phaser.Text,
-    sprite: Phaser.Sprite,
+    value: number;
+    text: Phaser.Text;
+    sprite: Phaser.Sprite;
 }
 
 export default class Main extends Phaser.Game {
@@ -22,8 +22,8 @@ export default class Main extends Phaser.Game {
 
     public global: any = {
         stats: {
-            cobblestone: <GameScoreInterface>{}
-        }
+            cobblestone: {} as GameScoreInterface,
+        },
     };
 
     constructor() {
@@ -33,25 +33,26 @@ export default class Main extends Phaser.Game {
     public boot(): void {
         super.boot();
 
-        this.state.add('boot', BootState, false);
-        this.state.add('preloader', PreloadState, false);
-        this.state.add('game', GameState, false);
+        this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
 
-        this.ui = this.add.group(null, 'ui', true);
+        this.state.add("boot", BootState, false);
+        this.state.add("preloader", PreloadState, false);
+        this.state.add("game", GameState, false);
+
+        this.ui = this.add.group(null, "ui", true);
 
         this.store = new Store();
         this.tick = new Phaser.Signal();
-        this.state.start('boot');
+        this.state.start("boot");
     }
 
-
     public makeText(text: string, group?: Phaser.Group | Phaser.Stage | Phaser.Stage, fontSize: number = 25) {
-        let tmp: Phaser.Text = this.add.text(0, 0, text, {
-            font: 'Arial',
-            fontSize: fontSize,
-            fill: '#ffffff',
-            align: 'left',
-            stroke: '#000000',
+        const tmp: Phaser.Text = this.add.text(0, 0, text, {
+            font: "Arial",
+            fontSize,
+            fill: "#ffffff",
+            align: "left",
+            stroke: "#000000",
             strokeThickness: 2,
         }, group);
 
@@ -60,11 +61,11 @@ export default class Main extends Phaser.Game {
         return tmp;
     }
 
-    drawTextWithIcon(texture: string, text: string, size: number = 20, padding: number = 0): TilesGroup {
+    public drawTextWithIcon(texture: string, text: string, size: number = 20, padding: number = 0): TilesGroup {
         let sprite: Phaser.Sprite;
         let textSprite: Phaser.Text;
-        let fontSize = size;
-        let group = new TilesGroup(this, this.stage);
+        const fontSize = size;
+        const group = new TilesGroup(this, this.stage);
 
         sprite = this.add.sprite(0, 0, texture, null, group);
         sprite.width = fontSize * this.resolution;
@@ -72,25 +73,24 @@ export default class Main extends Phaser.Game {
         sprite.position.y += 2 / (this.resolution) * this.resolution;
 
         textSprite = this.add.text(sprite.position.x + padding + sprite.width / this.resolution, 0, text, {
-            font: 'Arial',
-            fontSize: fontSize,
-            fill: '#ffffff',
-            align: 'center',
-            stroke: '#000000',
+            font: "Arial",
+            fontSize,
+            fill: "#ffffff",
+            align: "center",
+            stroke: "#000000",
             strokeThickness: 2,
         }, group);
-
 
         group.totalWidth = sprite.width / this.resolution + textSprite.width + padding;
 
         return group;
     }
 
-    spriteEmitter(sprite: Phaser.Sprite, size: number, maxSize: number = 1, colors: Array<number> = null): Phaser.Particles.Arcade.Emitter {
-        let particles = 4000 / this.resolution;
-        let emitter = this.add.emitter(this.world.centerX, this.world.centerY, particles);
+    public spriteEmitter(sprite: Phaser.Sprite, size: number, maxSize: number = 1, colors: number[] = null): Phaser.Particles.Arcade.Emitter {
+        const particles = 4000 / this.resolution;
+        const emitter = this.add.emitter(this.world.centerX, this.world.centerY, particles);
 
-        emitter.makeParticles('star');
+        emitter.makeParticles("star");
 
         emitter.setRotation(0, 10);
         emitter.setXSpeed(1, 1);
@@ -124,7 +124,7 @@ export default class Main extends Phaser.Game {
     }
 
     public cloneSprite(sprite: Phaser.Sprite): Phaser.Sprite {
-        let tmp = this.add.sprite(sprite.position.x, sprite.position.y, sprite.texture);
+        const tmp = this.add.sprite(sprite.position.x, sprite.position.y, sprite.texture);
 
         tmp.height = sprite.height;
         tmp.width = sprite.width;
@@ -134,12 +134,12 @@ export default class Main extends Phaser.Game {
         return tmp;
     }
 
-    moveDraggable() {
+    public moveDraggable() {
         this.draggable.position.x = this.input.activePointer.worldX + this.draggable.width / 2 + 5;
         this.draggable.position.y = this.input.activePointer.worldY + this.draggable.height / 2 + 5;
     }
 
-    update(time: number): void {
+    public update(time: number): void {
         super.update(time);
 
         if (this.draggable !== null) {

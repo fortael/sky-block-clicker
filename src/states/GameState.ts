@@ -1,15 +1,14 @@
 import Main from "../main";
 
-import StructuresHook from "../hooks/StructuresHook";
-import WorldEffects from "../hooks/EffectsHook";
 import Camera from "../hooks/CameraHook";
-import MainCookieBlock from "../structures/MainCookieBlock";
+import WorldEffects from "../hooks/EffectsHook";
+import StructuresHook from "../hooks/StructuresHook";
 import MainTreeStructure from "../structures/GroupStructures/MainTreeStructure";
+import MainCookieBlock from "../structures/MainCookieBlock";
 import ToolbarUi from "../ui/ToolbarUi";
 
 let moveUp: Phaser.Key, moveLeft: Phaser.Key, moveRight: Phaser.Key, moveDown: Phaser.Key;
 let zoomIn: Phaser.Key, zoomOut: Phaser.Key;
-let panel: Phaser.Group;
 
 class GameState extends Phaser.State {
 
@@ -20,7 +19,7 @@ class GameState extends Phaser.State {
 
     public game: Main;
 
-    preload() {
+    public preload() {
         const { game, world } = this;
 
         game.time.advancedTiming = true;
@@ -31,8 +30,8 @@ class GameState extends Phaser.State {
         this.ToolbarUi = new ToolbarUi(game);
     }
 
-    create() {
-        let game = this.game;
+    public create() {
+        const game = this.game;
 
         this.CameraHook
             .centerCamera();
@@ -63,7 +62,6 @@ class GameState extends Phaser.State {
         zoomIn = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         zoomOut = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 
-
         this.game.tick.active = true;
         this.game.time.events.repeat(Phaser.Timer.SECOND / 10, Infinity, () => {
             this.game.tick.dispatch();
@@ -71,12 +69,12 @@ class GameState extends Phaser.State {
         }, this);
     }
 
-    update(game: Main) {
+    public update(game: Main) {
         // this.game.debug.cameraInfo(this.camera, 100, 100);
         // this.game.debug.text(this.game.time.fps, 20, 20);
 
-        let moveStep = 10;
-        let zoomStep = 0.05;
+        const moveStep = 10;
+        const zoomStep = 0.05;
 
         if (moveDown.isDown) {
             this.camera.y += moveStep;
@@ -96,13 +94,13 @@ class GameState extends Phaser.State {
         // });
     }
 
-    updateStat() {
+    public updateStat() {
         this.ToolbarUi.render();
         // console.log(1);
     }
 
-    pause() {
-        this.game.state.start('menu');
+    public pause() {
+        this.game.state.start("menu");
     }
 }
 
