@@ -1,3 +1,1 @@
-export default {
-    SunSize: 150
-}
+export default {};

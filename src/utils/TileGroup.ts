@@ -5,26 +5,30 @@ export class TilesGroup extends Phaser.Group {
     public totalWidth: number = 0;
     public totalHeight: number = 0;
 
-    public game:Main;
-
-    // constructor(game: Phaser.Game, parent?: PIXI.DisplayObjectContainer, name?: string, addToStage?: boolean, enableBody?: boolean, physicsBodyType?: number) {
-    //     super(game, parent, name, addToStage, enableBody, physicsBodyType);
-    // }/
+    public game: Main;
 
     public horizontalCenter() {
         this.position.x = (this.game.width - this.totalWidth) / 2;
+
+        return this;
     }
 
     public verticalCenter() {
-        this.position.y = this.game.world.centerY - this.totalHeight / 2;
+        this.position.y = this.game.height / 2 - this.totalHeight / 2;
+
+        return this;
     }
 
     public verticalBottom(padding: number = 0) {
-        this.position.y = this.game.height - this.height - padding;
+        this.position.y = this.game.height - this.totalHeight - padding;
+
+        return this;
     }
 
     public placeOneByOne(padding: number = 0) {
         this.placeInRow(padding);
+
+        return this;
     }
 
     public posTo(x: number, y: number) {
@@ -47,7 +51,6 @@ export class TilesGroup extends Phaser.Group {
 
         this.totalHeight = 0;
         this.totalWidth = 0;
-
 
         this.forEach((sprite: Phaser.Sprite | Phaser.Text | TilesGroup) => {
             if (!(sprite instanceof Phaser.Group)) {

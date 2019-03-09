@@ -5,12 +5,12 @@ import BaseBlock from "./BaseBlock";
  */
 export default class MainCookieBlock extends BaseBlock {
 
-    create() {
+    public create() {
         this.regeneratable = true;
         this.regenerateTimeout = 5;
     }
 
-    onDestroyed() {
+    public onDestroyed() {
         this.game.store.inventory.cobblestone += 1;
     }
 }

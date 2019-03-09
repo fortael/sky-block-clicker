@@ -1,28 +1,37 @@
-import { BLOCK_COBBLESTONE, BLOCK_SAPLING, BLOCK_WOOD } from "../hooks/StructuresHook";
-import { makeText, makeTile } from "../utils/phaser";
-import BaseUi from "./BaseUi";
 import { debounce } from "lodash";
+import { BLOCK_COBBLESTONE, BLOCK_SAPLING, BLOCK_WOOD } from "../hooks/StructuresHook";
+import Main from "../main";
+import { makeText, makeTile } from "../utils/phaser";
+import { TilesGroup } from "../utils/TileGroup";
 
-export default class ToolbarUi extends BaseUi {
+export default class ToolbarUi extends TilesGroup {
 
-    public create() {
-        const {group, game} = this;
+    constructor(game: Main, parent?: PIXI.DisplayObjectContainer, name?: string) {
+        super(game, parent, name, true, true);
 
-        group.addChild(this.makeItem(BLOCK_COBBLESTONE, () => game.store.inventory.cobblestone));
-        group.addChild(this.makeItem(BLOCK_WOOD, () => game.store.inventory.wood));
-        group.addChild(this.makeItem(BLOCK_SAPLING, () => game.store.inventory.sapling));
+        this.addChild(this.makeItem(BLOCK_COBBLESTONE, () => game.store.inventory.cobblestone));
+        this.addChild(this.makeItem(BLOCK_WOOD, () => game.store.inventory.wood));
+        this.addChild(this.makeItem(BLOCK_SAPLING, () => game.store.inventory.sapling));
+        this.pos();
 
-        group.placeInRow();
-        this.resize();
+        game.scale.setResizeCallback(debounce(this.pos, 100), this);
+    }
 
-        game.scale.setResizeCallback(debounce(this.resize, 100), this);
+    public pos() {
+        this.placeInRow().verticalBottom().horizontalCenter();
+
+        return this;
+    }
+
+    public render() {
+        //
     }
 
     public makeItem(id: number, getValue: () => string = () => "") {
-        const group = new Phaser.Group(this.game);
-        const slot = this.group.makeBasicSquare(64);
+        const group = new Phaser.Group(this.game, this);
+        const slot = this.makeBasicSquare(64);
         const tile = makeTile(this.game, id);
-        const text = makeText(this.game, this.game.store.inventory.cobblestone);
+        const text = makeText(this.game, getValue());
 
         tile.anchor.setTo(0.5, 0.5);
         tile.x = slot.width / 2 - 10;
@@ -38,15 +47,10 @@ export default class ToolbarUi extends BaseUi {
         group.addChild(tile);
         group.addChild(text);
 
-        this.game.tick.add(() => {
+        group.update = () => {
             text.setText(getValue());
-        });
+        };
 
         return group;
-    }
-
-    public resize() {
-        this.group.horizontalCenter();
-        this.group.verticalBottom(20);
     }
 }

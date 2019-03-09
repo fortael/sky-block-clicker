@@ -1,5 +1,5 @@
-import Main from "../../main";
 import StructuresHook  from "../../hooks/StructuresHook";
+import Main from "../../main";
 import BaseBlock from "../BaseBlock";
 
 export default class BaseGroupStructure {
@@ -9,7 +9,7 @@ export default class BaseGroupStructure {
     protected structureHook: StructuresHook;
     protected observable: BaseBlock[] = [];
 
-    protected temporarySprites:Phaser.Sprite[] = [];
+    protected temporarySprites: Phaser.Sprite[] = [];
 
     protected regeneratable: boolean = false;
 
@@ -60,7 +60,7 @@ export default class BaseGroupStructure {
      * Событие при восстановлении объекта
      */
     public onRespawn() {
-        this.temporarySprites.forEach((item:Phaser.Sprite) => {
+        this.temporarySprites.forEach((item: Phaser.Sprite) => {
             item.destroy();
         });
     }
@@ -130,32 +130,29 @@ export default class BaseGroupStructure {
      */
     public observe(
         array: BaseBlock[],
-        onDestroyed: { (remain:number): void; } = () => {},
-        onAllDestroyed: { (): void; } = () => {}
+        onDestroyed: (remain: number) => void = () => undefined,
+        onAllDestroyed: () => void = () => undefined,
     ) {
-        return (function (ctx) {
-            let count = array.length;
-            let countStart = array.length;
+        let count = array.length;
+        const countStart = array.length;
 
-            array.forEach((item: BaseBlock) => {
-                item.onDestroyed = () => {
-                    count--;
-                    onDestroyed(count);
+        array.forEach((item: BaseBlock) => {
+            item.onDestroyed = () => {
+                count--;
+                onDestroyed(count);
 
-                    if (count <= 0) {
-                        count = countStart;
-                        onAllDestroyed();
-                    }
+                if (count <= 0) {
+                    count = countStart;
+                    onAllDestroyed();
+                }
 
-                    if (ctx.isDestroyed()) {
-                        ctx.destroy(); //вызываем уничтожении, чтобы сбросить счетчик и вызвать эвент
-                    }
-                };
+                if (this.isDestroyed()) {
+                    this.destroy(); // вызываем уничтожении, чтобы сбросить счетчик и вызвать эвент
+                }
+            };
 
-
-                ctx.observable.push(item);
-            });
-        })(this);
+            this.observable.push(item);
+        });
     }
 
     /**

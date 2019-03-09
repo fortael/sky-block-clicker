@@ -7,12 +7,12 @@ export default class PreloadState extends Phaser.State {
 
     }
 
-    preload() {
+    public preload() {
         this.asset = this.add.sprite(this.game.width * 0.5 - 110, this.game.height * 0.5 - 10, 'preloader');
         this.load.setPreloadSprite(this.asset);
     }
 
-    update() {
+    public update() {
         this.game.state.start('game');
     }
 }

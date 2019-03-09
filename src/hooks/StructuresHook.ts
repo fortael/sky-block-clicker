@@ -43,10 +43,10 @@ export default class StructuresHook extends BaseHook {
         const water = this.makeTile(BLOCK_WATER_FLUID, 31, 32, this.levelBase);
 
         const lavaEmitter = this.game.spriteEmitter(lava, lava.width / this.game.resolution, 2, [
-            0xFFAE00, 0xFF9300, 0xFF7000, 0xFF4600, 0xFF1700
+            0xFFAE00, 0xFF9300, 0xFF7000, 0xFF4600, 0xFF1700,
         ]);
         const waterEmitter = this.game.spriteEmitter(water, water.width / this.game.resolution - 20, 1, [
-            0x505dd6, 0x505dd6, 0x626ee0, 0x2b4b9b, 0x2b4b9b
+            0x505dd6, 0x505dd6, 0x626ee0, 0x2b4b9b, 0x2b4b9b,
         ]);
 
         lavaEmitter.x = lava.x + lava.width / 2;

@@ -68,7 +68,7 @@ export default class EffectsHook extends BaseHook {
         const maxParticles = 100 / game.resolution;
         const emitter = game.add.emitter(world.centerX, world.centerY, maxParticles);
 
-        emitter.makeParticles('star');
+        emitter.makeParticles("star");
 
         const min = 0;
         const max = 1;
