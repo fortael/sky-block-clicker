@@ -4,10 +4,6 @@ export default class BootState extends Phaser.State {
 
     public game: Main;
 
-    constructor() {
-        super();
-    }
-
     public preload() {
         this.load.image("preloader", "assets/preloader.gif");
 
@@ -58,7 +54,6 @@ export default class BootState extends Phaser.State {
 
     public create() {
         this.makeScreen();
-
         this.game.state.start("preloader");
     }
 }

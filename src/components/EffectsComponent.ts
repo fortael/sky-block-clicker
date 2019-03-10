@@ -102,7 +102,7 @@ export default class EffectsComponent {
         const { game } = this;
         const { world } = game;
 
-        game.create.grid("grid", world.width, world.height, 64, 64, 'red', true, (texture:any) => {
+        game.create.grid("grid", world.width, world.height, 64, 64, "red", true, (texture: any) => {
             game.add.sprite(world.bounds.topLeft.x, 0, texture);
         });
 
@@ -111,7 +111,7 @@ export default class EffectsComponent {
 
             for (let x = 0; x < world.width; x += 64) {
                 for (let y = 0; y < world.height; y += 64) {
-                    const text = game.makeText(`x:${x/64}\r\ny:${64 - y/64}`, textGroup, 15);
+                    const text = game.makeText(`x:${x / 64}\r\ny:${64 - y / 64}`, textGroup, 15);
 
                     text.x = x;
                     text.y = y;

@@ -1,16 +1,13 @@
 import Main from "../Main";
 
-import Camera from "../components/CameraComponent";
+import { Container } from "typedi";
+import CameraComponent from "../components/CameraComponent";
 import WorldEffects from "../components/EffectsComponent";
+import EffectsComponent from "../components/EffectsComponent";
 import StructuresComponent, { BLOCK_CHEST, BLOCK_COBBLESTONE } from "../components/StructuresComponent";
 import MainTreeStructure from "../entities/structures/MainTreeStructure";
-import MainCookieBlock from "../entities/blocks/MainCookieBlock";
 import ToolbarUi from "../ui/ToolbarUi";
-import SaveChestBlock from "../entities/blocks/SaveChestBlock";
-import CameraComponent from "../components/CameraComponent";
-import { Container, Service } from "typedi";
-import World from "../World";
-import EffectsComponent from "../components/EffectsComponent";
+import MainCookieStructure from "../entities/structures/MainCookieStructure";
 
 let moveUp: Phaser.Key,
     moveLeft: Phaser.Key,
@@ -27,13 +24,8 @@ class GameState extends Phaser.State {
     public ToolbarUi: ToolbarUi;
 
     public game: Main;
-    public world: World;
 
     public preload() {
-        const { game, world } = this;
-
-        game.time.advancedTiming = true;
-
         this.EffectsHook = Container.get(EffectsComponent);
         this.StructuresHook = Container.get(StructuresComponent);
         this.ToolbarUi = Container.get(ToolbarUi);
@@ -55,15 +47,22 @@ class GameState extends Phaser.State {
             .spawnBaseLevel()
             .spawnIsland1();
 
-        const cookie = new MainCookieBlock(game, this.StructuresHook.makeTile(BLOCK_COBBLESTONE, 30, 32));
+        // const coreds = StructuresComponent.getCordsByXY(30, 32);
+        // const cookie = new MainCookieBlock(game, BLOCK_COBBLESTONE, coreds.x, coreds.y);
 
-        cookie.onHover();
+        // game.add.tween(new MainCookieBlock(game, BLOCK_COBBLESTONE, coreds.x, coreds.y));
+        // this.game.create.
+        // cookie.onHover();
 
-        // todo: observer
-        new MainTreeStructure(game, this.StructuresHook, 35, 32);
-        new MainTreeStructure(game, this.StructuresHook, 41, 32);
+        const structures = [
+            new MainCookieStructure(game, 32, 30),
+        ];
 
-        new SaveChestBlock(game, this.StructuresHook.makeTile(BLOCK_CHEST, 37, 32));
+        //todo: Починить сундук и дерево
+
+        // Container.get(MainTreeStructure).on(35, 32).make();
+
+        // new SaveChestBlock(game, this.StructuresHook.makeTile(BLOCK_CHEST, 37, 32));
 
         // this.EffectsComponent.debugGrid(true);
         // this.EffectsComponent.particlesEmitter();

@@ -19,7 +19,7 @@ export function borderSquare(game: Phaser.Game, sprite: Phaser.Sprite) {
 }
 
 export function makeTile(game: Phaser.Game, id: number, group?: Phaser.Group | null): Phaser.Sprite {
-    const block = game.add.sprite(0, 0, "sheet", id - 1, group);
+    const block = game.add.sprite(2000, 2000, "sheet", id - 1, group);
 
     block.width = 32;
     block.height = 32;

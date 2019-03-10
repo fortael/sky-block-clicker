@@ -32,39 +32,35 @@ export default class StructuresComponent {
         };
     }
 
-    protected levelBase: Phaser.Group;
-    protected mainTree: Phaser.Group;
+    // protected levelBase: Phaser.Group;
+    // protected mainTree: Phaser.Group;
 
     constructor(
         @Inject(() => Main) protected game: Main,
         protected effectComponent: EffectsComponent,
     ) {}
 
-    public spawnMainCookie() {
-        return this.makeTile(BLOCK_COBBLESTONE, 30, 32, this.levelBase);
-    }
-
     public spawnBaseLevel() {
-        this.levelBase = this.game.add.group();
+        // this.levelBase = this.game.add.group();
 
-        this.makeTile(BLOCK_COBBLESTONE, 28, 32, this.levelBase);
-        this.makeTile(BLOCK_COBBLESTONE, 32, 32, this.levelBase);
+        this.makeTile(BLOCK_COBBLESTONE, 28, 32);
+        this.makeTile(BLOCK_COBBLESTONE, 32, 32);
 
-        this.makeTile(BLOCK_DIRT, 27, 31, this.levelBase);
-        this.makeTile(BLOCK_DIRT, 28, 31, this.levelBase);
-        this.makeTile(BLOCK_DIRT, 29, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 30, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 31, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 32, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 33, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 34, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 35, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 36, 31, this.levelBase);
-        this.makeTile(BLOCK_DIRT, 37, 31, this.levelBase);
-        this.makeTile(BLOCK_DIRT, 38, 31, this.levelBase);
+        this.makeTile(BLOCK_DIRT, 27, 31);
+        this.makeTile(BLOCK_DIRT, 28, 31);
+        this.makeTile(BLOCK_DIRT, 29, 31);
+        this.makeTile(BLOCK_DIRT, 30, 31);
+        this.makeTile(BLOCK_DIRT, 31, 31);
+        this.makeTile(BLOCK_DIRT, 32, 31);
+        this.makeTile(BLOCK_GRASS, 33, 31);
+        this.makeTile(BLOCK_GRASS, 34, 31);
+        this.makeTile(BLOCK_GRASS, 35, 31);
+        this.makeTile(BLOCK_GRASS, 36, 31);
+        this.makeTile(BLOCK_DIRT, 37, 31);
+        this.makeTile(BLOCK_DIRT, 38, 31);
 
-        const lava = this.makeTile(BLOCK_LAVA_FLUID, 29, 32, this.levelBase);
-        const water = this.makeTile(BLOCK_WATER_FLUID, 31, 32, this.levelBase);
+        const lava = this.makeTile(BLOCK_LAVA_FLUID, 29, 32);
+        const water = this.makeTile(BLOCK_WATER_FLUID, 31, 32);
 
         // effectComponent.
         const lavaEmitter = this.effectComponent.spriteEmitter(lava, lava.width / this.game.resolution, 2, [
@@ -115,7 +111,7 @@ export default class StructuresComponent {
      * @param group
      */
     public makeBlock(id: number, x: number, y: number, group?: Phaser.Group) {
-        return new BaseBlock(this.game, this.makeTile(id, x, y, group));
+        return new BaseBlock(this.game, id, x, y);
     }
 
     /**
@@ -132,7 +128,7 @@ export default class StructuresComponent {
 
         for (let x = fromX; x <= toX; x++) {
             for (let y = fromY; y <= toY; y++) {
-                array.push(this.makeBlock(id, x, y, group));
+                // array.push(this.makeBlock(id, x, y, group));
             }
         }
 

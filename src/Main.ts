@@ -15,16 +15,19 @@ import World from "./World";
 @Service()
 export default class Main extends Phaser.Game {
 
-    @Inject(() => World)
-    public world: World;
+    // @Inject(() => World)
+    // public world: World;
+
     public ui: Phaser.Group;
     public tick: Phaser.Signal;
 
     public store: Store;
-    public showFps = false;
+    public showFps = true;
 
     public boot(): void {
         super.boot();
+
+        this.time.advancedTiming = true;
 
         this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
         this.ui = this.add.group(null, "ui", true);
@@ -43,6 +46,7 @@ export default class Main extends Phaser.Game {
     }
 
     public register() {
+        // Container.set(World, this.world);
         Container.set(ToolbarUi, new ToolbarUi(this, this.ui, "toolbar"));
     }
 

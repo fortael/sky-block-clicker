@@ -1,13 +1,7 @@
-import StructuresComponent  from "../../components/StructuresComponent";
 import Main from "../../Main";
 import BaseBlock from "../blocks/BaseBlock";
 
-export default class BaseGroupStructure {
-
-    protected game: Main;
-    protected group: Phaser.Group;
-    protected structureHook: StructuresComponent;
-    protected observable: BaseBlock[] = [];
+export default class BaseGroupStructure extends Phaser.Group {
 
     protected temporarySprites: Phaser.Sprite[] = [];
 
@@ -19,47 +13,46 @@ export default class BaseGroupStructure {
     protected regenerateTimeout: number = 0;
     private regenerateTimeoutCounter: number = 0;
 
-    constructor(game: Main, structureHook: StructuresComponent, pivotX: number, pivotY: number) {
-        this.game = game;
-        this.group = game.add.group();
-        this.structureHook = structureHook;
-
-        this.pivotX = pivotX;
+    constructor(
+        public game: Main,
+        pivotX: number,
+        pivotY: number,
+    ) {
+        super(game);
         this.pivotY = pivotY;
+        this.pivotX = pivotX;
 
-        this.create();
-
-        this.game.tick.add(() => {
-            this.regen();
-        });
-
+        this.make();
+        this.game.tick.add(() => this.regen());
         this.onReady();
+
     }
 
     /**
-     * Создание
+     * Регистрация обсервера
      */
-    public create() {
-
+    public make() {
+        //
     }
 
     /**
      * Событие при первом создании структуры в мире
      */
     public onReady() {
+        //
     }
 
     /**
      * Событие при уничтожении объекта
      */
-    public onDestroyed() {
+    public onStructureDestroyed() {
         this.regenerateTimeoutCounter = this.regenerateTimeout;
     }
 
     /**
      * Событие при восстановлении объекта
      */
-    public onRespawn() {
+    public onRespawnStructure() {
         this.temporarySprites.forEach((item: Phaser.Sprite) => {
             item.destroy();
         });
@@ -68,55 +61,38 @@ export default class BaseGroupStructure {
     /**
      * Уничтожить каждый блок в структуре
      */
-    public destroy() {
-        this.observable.forEach((item: BaseBlock) => {
-            if (!item.isDestroyed()) {
-                item.destroy();
-            }
-        });
-
-        this.regenerateTimeoutCounter = this.regenerateTimeout;
-
-        this.onDestroyed();
+    public destroyStructure() {
+        this.callAllExists("kill", true);
+        this.onStructureDestroyed();
     }
 
     /**
      * Восстановить каждый блок в структуре
      */
-    public respawn() {
-        this.observable.forEach((item: BaseBlock) => {
-            item.respawn();
-        });
-
-        this.onRespawn();
+    public respawnStructure() {
+        this.callAllExists("revive", false, [ 1 ]);
+        this.onRespawnStructure();
     }
 
     /**
      * Вся структура целиком уничтожена
      */
-    public isDestroyed() {
-        let isDestroyed = true;
-
-        this.observable.forEach((item: BaseBlock) => {
-            if (!item.isDestroyed()) {
-                isDestroyed = false;
-            }
-        });
-
-        return isDestroyed;
+    public isStructureDestroyed() {
+        return this.countLiving() === 0;
     }
 
     /**
      * Пытается восстановить структуру по таймауту, когда она целиком уничтожена
      */
     public regen() {
-        if (this.regeneratable && this.isDestroyed()) {
+        if (this.regeneratable && this.isStructureDestroyed()) {
             if (this.regenerateTimeoutCounter > 0) {
                 this.regenerateTimeoutCounter--;
                 return;
             }
 
-            this.respawn();
+            this.regenerateTimeoutCounter = this.regenerateTimeout;
+            this.respawnStructure();
         }
 
         return this;
@@ -129,7 +105,7 @@ export default class BaseGroupStructure {
      * @param onAllDestroyed - Срабатывает, когда все блоки из массива были удалены
      */
     public observe(
-        array: BaseBlock[],
+        array: Phaser.Sprite[],
         onDestroyed: (remain: number) => void = () => undefined,
         onAllDestroyed: () => void = () => undefined,
     ) {
@@ -137,7 +113,7 @@ export default class BaseGroupStructure {
         const countStart = array.length;
 
         array.forEach((item: BaseBlock) => {
-            item.onDestroyed = () => {
+            item.events.onKilled.add(() => {
                 count--;
                 onDestroyed(count);
 
@@ -146,34 +122,15 @@ export default class BaseGroupStructure {
                     onAllDestroyed();
                 }
 
-                if (this.isDestroyed()) {
-                    this.destroy(); // вызываем уничтожении, чтобы сбросить счетчик и вызвать эвент
+                if (this.isStructureDestroyed()) {
+                    this.destroyStructure(); // вызываем уничтожении, чтобы сбросить счетчик и вызвать эвент
                 }
-            };
+            });
 
-            this.observable.push(item);
+           // this.resetAll()
+
+            // this.observable.push(item);
+            this.addChild(item);
         });
-    }
-
-    /**
-     * Сгенерировать базовый блок
-     * @param id
-     * @param x
-     * @param y
-     */
-    public makeBlock(id: number, x: number, y: number) {
-        return this.structureHook.makeBlock(id, x, y, this.group);
-    }
-
-    /**
-     * Сгенерировать зону заполненную блоками
-     * @param id
-     * @param fromX
-     * @param fromY
-     * @param toX
-     * @param toY
-     */
-    public makeBlocks(id: number, fromX: number, fromY: number, toX: number, toY: number) {
-        return this.structureHook.makeBlocks(id, fromX, fromY, toX, toY, this.group);
     }
 }
