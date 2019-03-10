@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
     "removeComments": false,
     "noImplicitAny": false,
-    "pretty": true
+    "pretty": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
+  "lib": [],
   "files": [
     "./node_modules/phaser-ce/typescript/box2d.d.ts",
     "./node_modules/phaser-ce/typescript/p2.d.ts",

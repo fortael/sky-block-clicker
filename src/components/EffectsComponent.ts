@@ -1,14 +1,21 @@
-import BaseHook from "./BaseHook";
+import { Inject, Service } from "typedi";
+import Main from "../Main";
 
-export default class EffectsHook extends BaseHook {
+@Service()
+export default class EffectsComponent {
 
     protected objects: Phaser.Group[] = [];
+
+    constructor(
+        @Inject(() => Main) protected game: Main,
+    ) {}
 
     /**
      * Фоновый градиент
      */
     public drawBackgroundGradient() {
-        const { game, world } = this;
+        const { game } = this;
+        const { world } = game;
 
         const width = world.width * game.resolution;
         const height = world.height * game.resolution;
@@ -27,7 +34,7 @@ export default class EffectsHook extends BaseHook {
         myBitmap.context.fillRect(0, 0, width, height);
 
         this.game.add.sprite(world.bounds.topLeft.x, 0, myBitmap);
-        this.game.add.image(this.world.bounds.topLeft.x, 0, 'sky').anchor.set(0);
+        this.game.add.image(world.bounds.topLeft.x, 0, "sky").anchor.set(0);
 
         return this;
     }
@@ -36,34 +43,36 @@ export default class EffectsHook extends BaseHook {
      * Нарисовать рамки вокруг уровня
      */
     public drawBorders() {
-        const { game, world } = this;
+        const { game } = this;
+        const { world } = game;
         const color = 0x24ff00;
 
         game.add
             .graphics(0, 0, world)
             .beginFill(color)
-            .drawRect(world.bounds.topRight.x - 2, world.bounds.topRight.y, 2, game.world.height);
+            .drawRect(world.bounds.topRight.x - 2, world.bounds.topRight.y, 2, world.height);
 
         game.add
             .graphics(0, 0, world)
             .beginFill(color)
-            .drawRect(world.bounds.topLeft.x, world.bounds.topRight.y, 2, game.world.height);
+            .drawRect(world.bounds.topLeft.x, world.bounds.topRight.y, 2, world.height);
 
         game.add
             .graphics(0, 0, world)
             .beginFill(color)
-            .drawRect(world.bounds.topLeft.x, world.bounds.topLeft.y, game.world.width, 2);
+            .drawRect(world.bounds.topLeft.x, world.bounds.topLeft.y, world.width, 2);
 
         game.add
             .graphics(0, 0, world)
             .beginFill(color)
-            .drawRect(world.bounds.topLeft.x, world.bounds.bottomLeft.y - 2, game.world.width, 2);
+            .drawRect(world.bounds.topLeft.x, world.bounds.bottomLeft.y - 2, world.width, 2);
 
         return this;
     }
 
     public particlesEmitter() {
-        const { game, world } = this;
+        const { game } = this;
+        const { world } = game;
 
         const maxParticles = 100 / game.resolution;
         const emitter = game.add.emitter(world.centerX, world.centerY, maxParticles);
@@ -90,9 +99,10 @@ export default class EffectsHook extends BaseHook {
     }
 
     public debugGrid(cords: boolean = false) {
-        const { game, world } = this;
+        const { game } = this;
+        const { world } = game;
 
-        game.create.grid('grid', world.width, world.height, 64, 64, 'red', true, (texture:any) => {
+        game.create.grid("grid", world.width, world.height, 64, 64, 'red', true, (texture:any) => {
             game.add.sprite(world.bounds.topLeft.x, 0, texture);
         });
 
@@ -109,4 +119,37 @@ export default class EffectsHook extends BaseHook {
             }
         }
     }
+
+    public spriteEmitter(
+        sprite: Phaser.Sprite,
+        size: number,
+        maxSize: number = 1,
+        colors: number[] = null,
+    ): Phaser.Particles.Arcade.Emitter {
+        const { game } = this;
+        const { world } = game;
+
+        const particles = 4000 / game.resolution;
+        const emitter = game.add.emitter(world.centerX, world.centerY, particles);
+
+        emitter.makeParticles("star");
+
+        emitter.setRotation(0, 10);
+        emitter.setXSpeed(1, 1);
+        emitter.setYSpeed(1, 1);
+        emitter.setScale(1, maxSize, 1, maxSize, 1000, Phaser.Easing.Circular.InOut);
+        emitter.gravity.set(0);
+
+        if (colors !== null && colors.length > 0) {
+            emitter.forEach((particle: Phaser.Particle) => {
+                particle.tint = game.rnd.pick(colors);
+            }, this);
+        }
+
+        emitter.width = size;
+        emitter.height = size;
+
+        return emitter.start(false, 1000, 100, 0);
+    }
+
 }

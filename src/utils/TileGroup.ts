@@ -1,11 +1,17 @@
-import Main from "../main";
+import { Inject } from "typedi";
+import Main from "../Main";
 
 export class TilesGroup extends Phaser.Group {
 
     public totalWidth: number = 0;
     public totalHeight: number = 0;
 
+    @Inject(() => Main)
     public game: Main;
+
+    public make() {
+        //
+    }
 
     public horizontalCenter() {
         this.position.x = (this.game.width - this.totalWidth) / 2;

@@ -1,11 +1,16 @@
-import Main from "../main";
+import Main from "../Main";
 
-import Camera from "../hooks/CameraHook";
-import WorldEffects from "../hooks/EffectsHook";
-import StructuresHook from "../hooks/StructuresHook";
-import MainTreeStructure from "../structures/GroupStructures/MainTreeStructure";
-import MainCookieBlock from "../structures/MainCookieBlock";
+import Camera from "../components/CameraComponent";
+import WorldEffects from "../components/EffectsComponent";
+import StructuresComponent, { BLOCK_CHEST, BLOCK_COBBLESTONE } from "../components/StructuresComponent";
+import MainTreeStructure from "../entities/structures/MainTreeStructure";
+import MainCookieBlock from "../entities/blocks/MainCookieBlock";
 import ToolbarUi from "../ui/ToolbarUi";
+import SaveChestBlock from "../entities/blocks/SaveChestBlock";
+import CameraComponent from "../components/CameraComponent";
+import { Container, Service } from "typedi";
+import World from "../World";
+import EffectsComponent from "../components/EffectsComponent";
 
 let moveUp: Phaser.Key,
     moveLeft: Phaser.Key,
@@ -17,29 +22,30 @@ let zoomIn: Phaser.Key, zoomOut: Phaser.Key;
 
 class GameState extends Phaser.State {
 
-    public StructuresHook: StructuresHook;
+    public StructuresHook: StructuresComponent;
     public EffectsHook: WorldEffects;
-    public CameraHook: Camera;
     public ToolbarUi: ToolbarUi;
 
     public game: Main;
+    public world: World;
 
     public preload() {
         const { game, world } = this;
 
         game.time.advancedTiming = true;
 
-        this.StructuresHook = new StructuresHook(game, world);
-        this.EffectsHook = new WorldEffects(game, world);
-        this.CameraHook = new Camera(game, world);
-        this.ToolbarUi = new ToolbarUi(game, game.ui);
+        this.EffectsHook = Container.get(EffectsComponent);
+        this.StructuresHook = Container.get(StructuresComponent);
+        this.ToolbarUi = Container.get(ToolbarUi);
+        this.ToolbarUi.make();
     }
 
     public create() {
         const game = this.game;
 
-        this.CameraHook
-            .centerCamera();
+        Container.get(CameraComponent).centerCamera();
+
+        // this.ToolbarUi.make();
 
         this.EffectsHook
             .drawBackgroundGradient()
@@ -49,15 +55,18 @@ class GameState extends Phaser.State {
             .spawnBaseLevel()
             .spawnIsland1();
 
-        const cookie = new MainCookieBlock(game, this.StructuresHook.spawnMainCookie());
+        const cookie = new MainCookieBlock(game, this.StructuresHook.makeTile(BLOCK_COBBLESTONE, 30, 32));
+
         cookie.onHover();
 
         // todo: observer
         new MainTreeStructure(game, this.StructuresHook, 35, 32);
         new MainTreeStructure(game, this.StructuresHook, 41, 32);
 
-        // this.EffectsHook.debugGrid(true);
-        // this.EffectsHook.particlesEmitter();
+        new SaveChestBlock(game, this.StructuresHook.makeTile(BLOCK_CHEST, 37, 32));
+
+        // this.EffectsComponent.debugGrid(true);
+        // this.EffectsComponent.particlesEmitter();
 
         moveUp = game.input.keyboard.addKey(Phaser.Keyboard.W);
         moveDown = game.input.keyboard.addKey(Phaser.Keyboard.S);
@@ -76,7 +85,7 @@ class GameState extends Phaser.State {
         }, this);
     }
 
-    // todo: вынести в CameraHook
+    // todo: вынести в CameraComponent
     public update(game: Main) {
         // this.game.debug.cameraInfo(this.camera, 100, 100);
         // this.game.debug.text(this.game.time.fps, 20, 20);
@@ -85,7 +94,7 @@ class GameState extends Phaser.State {
         const zoomStep = 0.05;
 
         if (center.isDown) {
-            this.CameraHook.centerCamera();
+            Container.get(CameraComponent).centerCamera();
         }
 
         if (moveDown.isDown) {

@@ -1,4 +1,4 @@
-import Main from "../main";
+import Main from "../Main";
 import { TilesGroup } from "../utils/TileGroup";
 
 export default class BaseUi {

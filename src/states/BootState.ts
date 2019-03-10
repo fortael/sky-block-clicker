@@ -1,4 +1,4 @@
-import Main from "../main";
+import Main from "../Main";
 
 export default class BootState extends Phaser.State {
 
@@ -14,7 +14,12 @@ export default class BootState extends Phaser.State {
         this.load.image("sky", "assets/sky.jpg");
         this.load.image("star", "assets/start.png");
 
-        this.load.spritesheet("sheet", "assets/blocks/blocks.png", 16, 16);
+        this.load.spritesheet("sheet", "assets/items.png", 32, 32, 480, 0, 0);
+
+        this.load.audio("click", "assets/sounds/click.mp3");
+        this.load.audio("stone", "assets/sounds/click.mp3");
+        this.load.audio("wood", "assets/sounds/wood.mp3");
+        this.load.audio("leaf", "assets/sounds/leaf.mp3");
 
         this.prepareWorld();
     }

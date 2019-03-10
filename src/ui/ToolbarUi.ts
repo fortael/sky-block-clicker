@@ -1,13 +1,14 @@
 import { debounce } from "lodash";
-import { BLOCK_COBBLESTONE, BLOCK_SAPLING, BLOCK_WOOD } from "../hooks/StructuresHook";
-import Main from "../main";
+import { Service } from "typedi";
+import { BLOCK_COBBLESTONE, BLOCK_SAPLING, BLOCK_WOOD } from "../components/StructuresComponent";
 import { makeText, makeTile } from "../utils/phaser";
 import { TilesGroup } from "../utils/TileGroup";
 
+@Service()
 export default class ToolbarUi extends TilesGroup {
 
-    constructor(game: Main, parent?: PIXI.DisplayObjectContainer, name?: string) {
-        super(game, parent, name, true, true);
+    public make() {
+        const { game, parent } = this;
 
         this.addChild(this.makeItem(BLOCK_COBBLESTONE, () => game.store.inventory.cobblestone));
         this.addChild(this.makeItem(BLOCK_WOOD, () => game.store.inventory.wood));
@@ -15,6 +16,7 @@ export default class ToolbarUi extends TilesGroup {
         this.pos();
 
         game.scale.setResizeCallback(debounce(this.pos, 100), this);
+
     }
 
     public pos() {
@@ -31,17 +33,15 @@ export default class ToolbarUi extends TilesGroup {
         const group = new Phaser.Group(this.game, this);
         const slot = this.makeBasicSquare(64);
         const tile = makeTile(this.game, id);
-        const text = makeText(this.game, getValue());
+        const text = makeText(this.game, getValue(), 14);
 
         tile.anchor.setTo(0.5, 0.5);
-        tile.x = slot.width / 2 - 10;
-        tile.y = slot.height / 2 - 10;
-        tile.width /= 2;
-        tile.height /= 2;
+        tile.x = (slot.width - 4) / 2;
+        tile.y = (slot.height - 4) / 2;
 
         text.anchor.setTo(0.5, 0.5);
-        text.x = slot.width / 2 + 10;
-        text.y = slot.height / 2 + 10;
+        text.x = (slot.width - 4) / 2;
+        text.y = (slot.height - 4) / 2 + 20;
 
         group.addChild(slot);
         group.addChild(tile);

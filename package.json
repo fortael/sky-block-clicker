@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "budo src/main.ts:bundle.js --live -- -d -e src/main.ts -p [tsify --noImplicitAny --project tsconfig.json ] -t [babelify --comments false --presets es2015]",
+    "start": "budo src/Main.ts:bundle.js --live -- -d -e src/Main.ts -p [tsify --noImplicitAny --project tsconfig.json ] -t [babelify --comments false --presets es2015]",
     "prebuild": "mkdirp build",
     "build": "npm run build:js && npm run build:css && npm run build:html && npm run copy:all",
-    "build:js": "browserify -d -e src/main.ts -t [babelify --comments false --presets es2015] | uglifyjs -cm > build/bundle.min.js",
+    "build:js": "browserify -d -e src/Main.ts -t [babelify --comments false --presets es2015] | uglifyjs -cm > build/bundle.min.js",
     "build:css": "cleancss css/main.css -o build/main.min.css",
     "build:html": "htmlprocessor index.html -o build/index.html",
     "copy:all": "npm run copy:assets && npm run copy:phaser",
@@ -17,8 +17,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^11.11.0",
     "lodash": "^4.17.11",
-    "phaser-ce": "^2.9.3"
+    "phaser-ce": "^2.9.3",
+    "reflect-metadata": "^0.1.13",
+    "typedi": "^0.8.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.122",

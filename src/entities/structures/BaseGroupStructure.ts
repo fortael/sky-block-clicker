@@ -1,12 +1,12 @@
-import StructuresHook  from "../../hooks/StructuresHook";
-import Main from "../../main";
-import BaseBlock from "../BaseBlock";
+import StructuresComponent  from "../../components/StructuresComponent";
+import Main from "../../Main";
+import BaseBlock from "../blocks/BaseBlock";
 
 export default class BaseGroupStructure {
 
     protected game: Main;
     protected group: Phaser.Group;
-    protected structureHook: StructuresHook;
+    protected structureHook: StructuresComponent;
     protected observable: BaseBlock[] = [];
 
     protected temporarySprites: Phaser.Sprite[] = [];
@@ -19,7 +19,7 @@ export default class BaseGroupStructure {
     protected regenerateTimeout: number = 0;
     private regenerateTimeoutCounter: number = 0;
 
-    constructor(game: Main, structureHook: StructuresHook, pivotX: number, pivotY: number) {
+    constructor(game: Main, structureHook: StructuresComponent, pivotX: number, pivotY: number) {
         this.game = game;
         this.group = game.add.group();
         this.structureHook = structureHook;

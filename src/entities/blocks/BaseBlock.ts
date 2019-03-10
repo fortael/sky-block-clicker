@@ -1,5 +1,5 @@
-import Main from "../main";
-import { borderSquare } from "../utils/phaser";
+import Main from "../../Main";
+import { borderSquare } from "../../utils/phaser";
 
 export default class BaseBlock {
 
@@ -36,25 +36,28 @@ export default class BaseBlock {
      * Создание
      */
     public create() {
-
+        //
     }
 
     /**
      * Событие после первого спавна блока в мире
      */
     public onReady() {
+        //
     }
 
     /**
      * Событие при уничтожении блока
      */
     public onDestroyed() {
+        //
     }
 
     /**
      * Событие при восстановлении блока
      */
     public onRespawn() {
+        //
     }
 
     /**
@@ -115,6 +118,8 @@ export default class BaseBlock {
     }
 
     public onHoverOut() {
-        this.hover !== null ? this.hover.destroy() : null;
+        if (this.hover !== null) {
+            this.hover.destroy();
+        }
     }
 }

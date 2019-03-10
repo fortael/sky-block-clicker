@@ -1,20 +1,44 @@
-import BaseHook from "./BaseHook";
-import BaseBlock from "../structures/BaseBlock";
+import BaseBlock from "../entities/blocks/BaseBlock";
 
+import { Inject, Service } from "typedi";
+import Main from "../Main";
 import { makeTile } from "../utils/phaser";
+import EffectsComponent from "./EffectsComponent";
 
-export const BLOCK_GRASS = 4;
-export const BLOCK_COBBLESTONE = 25;
-export const BLOCK_WOOD = 29;
-export const BLOCK_LAVA_FLUID = 94;
-export const BLOCK_WATER_FLUID = 95;
-export const BLOCK_LEAVES = 140;
-export const BLOCK_SAPLING = 16;
+export const BLOCK_DIRT = 1;
+export const BLOCK_GRASS = 2;
+export const BLOCK_COBBLESTONE = 3;
 
-export default class StructuresHook extends BaseHook {
+export const BLOCK_LAVA_FLUID = 4;
+export const BLOCK_WATER_FLUID = 5;
+
+export const BLOCK_WOOD = 6;
+export const BLOCK_LEAVES = 7;
+export const BLOCK_CHEST = 8;
+export const BLOCK_SAPLING = 9;
+
+@Service()
+export default class StructuresComponent {
+
+    /**
+     * Перевести игровые X и Y в нативные
+     * @param x
+     * @param y
+     */
+    public static getCordsByXY(x: number = 0, y: number) {
+        return {
+            x: x * 64,
+            y: (64 - y) * 64,
+        };
+    }
 
     protected levelBase: Phaser.Group;
     protected mainTree: Phaser.Group;
+
+    constructor(
+        @Inject(() => Main) protected game: Main,
+        protected effectComponent: EffectsComponent,
+    ) {}
 
     public spawnMainCookie() {
         return this.makeTile(BLOCK_COBBLESTONE, 30, 32, this.levelBase);
@@ -26,9 +50,9 @@ export default class StructuresHook extends BaseHook {
         this.makeTile(BLOCK_COBBLESTONE, 28, 32, this.levelBase);
         this.makeTile(BLOCK_COBBLESTONE, 32, 32, this.levelBase);
 
-        this.makeTile(BLOCK_GRASS, 27, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 28, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 29, 31, this.levelBase);
+        this.makeTile(BLOCK_DIRT, 27, 31, this.levelBase);
+        this.makeTile(BLOCK_DIRT, 28, 31, this.levelBase);
+        this.makeTile(BLOCK_DIRT, 29, 31, this.levelBase);
         this.makeTile(BLOCK_GRASS, 30, 31, this.levelBase);
         this.makeTile(BLOCK_GRASS, 31, 31, this.levelBase);
         this.makeTile(BLOCK_GRASS, 32, 31, this.levelBase);
@@ -36,16 +60,17 @@ export default class StructuresHook extends BaseHook {
         this.makeTile(BLOCK_GRASS, 34, 31, this.levelBase);
         this.makeTile(BLOCK_GRASS, 35, 31, this.levelBase);
         this.makeTile(BLOCK_GRASS, 36, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 37, 31, this.levelBase);
-        this.makeTile(BLOCK_GRASS, 38, 31, this.levelBase);
+        this.makeTile(BLOCK_DIRT, 37, 31, this.levelBase);
+        this.makeTile(BLOCK_DIRT, 38, 31, this.levelBase);
 
         const lava = this.makeTile(BLOCK_LAVA_FLUID, 29, 32, this.levelBase);
         const water = this.makeTile(BLOCK_WATER_FLUID, 31, 32, this.levelBase);
 
-        const lavaEmitter = this.game.spriteEmitter(lava, lava.width / this.game.resolution, 2, [
+        // effectComponent.
+        const lavaEmitter = this.effectComponent.spriteEmitter(lava, lava.width / this.game.resolution, 2, [
             0xFFAE00, 0xFF9300, 0xFF7000, 0xFF4600, 0xFF1700,
         ]);
-        const waterEmitter = this.game.spriteEmitter(water, water.width / this.game.resolution - 20, 1, [
+        const waterEmitter = this.effectComponent.spriteEmitter(water, water.width / this.game.resolution - 20, 1, [
             0x505dd6, 0x505dd6, 0x626ee0, 0x2b4b9b, 0x2b4b9b,
         ]);
 
@@ -70,7 +95,7 @@ export default class StructuresHook extends BaseHook {
      * @param group
      */
     public makeTile(id: number, cordX: number = 0, cordY: number = 0, group?: Phaser.Group | null) {
-        const { x, y } = StructuresHook.getCordsByXY(cordX, cordY);
+        const { x, y } = StructuresComponent.getCordsByXY(cordX, cordY);
         const block = makeTile(this.game, id, group);
 
         block.x = x;
@@ -103,7 +128,7 @@ export default class StructuresHook extends BaseHook {
      * @param group
      */
     public makeBlocks(id: number, fromX: number, fromY: number, toX: number, toY: number, group?: Phaser.Group) {
-        let array: BaseBlock[] = [];
+        const array: BaseBlock[] = [];
 
         for (let x = fromX; x <= toX; x++) {
             for (let y = fromY; y <= toY; y++) {
@@ -112,17 +137,5 @@ export default class StructuresHook extends BaseHook {
         }
 
         return array;
-    }
-
-    /**
-     * Перевести игровые X и Y в нативные
-     * @param x
-     * @param y
-     */
-    public static getCordsByXY(x: number = 0, y: number) {
-        return {
-            x: x * 64,
-            y: (64 - y) * 64
-        };
     }
 }
