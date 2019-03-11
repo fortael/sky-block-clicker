@@ -1,37 +1,41 @@
-import BaseGroupStructure from "./BaseGroupStructure";
-import { Inject } from "typedi";
+import { Inject, Service } from "typedi";
+import { BLOCK_COBBLESTONE, BLOCK_WOOD } from "../../components/StructuresComponent";
 import Main from "../../Main";
-import StructuresComponent, { BLOCK_COBBLESTONE, BLOCK_WOOD } from "../../components/StructuresComponent";
 import BaseBlock from "../blocks/BaseBlock";
-import { makeTile } from "../../utils/phaser";
+import BaseGroupStructure from "./BaseGroupStructure";
 
 /**
  * Главный блок в центре
  */
+@Service()
 export default class MainCookieStructure extends BaseGroupStructure {
 
     protected sound: Phaser.Sound;
 
     constructor(
         @Inject(() => Main) game: Main,
-        pivotX: number,
-        pivotY: number,
     ) {
-        super(game, pivotY, pivotX);
-        this.regeneratable = true;
-        this.regenerateTimeout = 10;
-        this.sound = this.game.add.sound("click");
+        super(game);
     }
 
     public make() {
-        const { pivotX, pivotY, game } = this;
+        const { game } = this;
 
-        this.observe([
-            new BaseBlock(game, BLOCK_COBBLESTONE, pivotX, pivotY),
-        ], () => {
-            this.game.store.inventory.cobblestone += 1;
-            this.sound.play();
-        });
+        this.regeneratable = true;
+        this.regenerateTimeout = 10;
+        this.sound = this.game.add.sound("click");
+
+        this.observeDestroy(
+            [
+                new BaseBlock(game, BLOCK_COBBLESTONE, 0, 0),
+                new BaseBlock(game, BLOCK_COBBLESTONE, 0, 1),
+                new BaseBlock(game, BLOCK_COBBLESTONE, 0, 2),
+            ],
+            () => {
+                this.game.store.inventory.cobblestone += 1;
+                this.sound.play();
+            },
+        );
     }
 
     public create() {

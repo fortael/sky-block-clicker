@@ -32,6 +32,18 @@ export default class StructuresComponent {
         };
     }
 
+    /**
+     * Перевести игровые X и Y в нативные
+     * @param x
+     * @param y
+     */
+    public static getXYByCords(x: number = 0, y: number) {
+        return {
+            x: x / 64,
+            y: y / -64 + 64,
+        };
+    }
+
     // protected levelBase: Phaser.Group;
     // protected mainTree: Phaser.Group;
 

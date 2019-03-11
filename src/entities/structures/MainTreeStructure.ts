@@ -11,10 +11,8 @@ export default class MainTreeStructure extends BaseGroupStructure {
 
     constructor(
         @Inject(() => Main) game: Main,
-        pivotX: number,
-        pivotY: number,
     ) {
-        super(game, pivotX, pivotY);
+        super(game);
 
         this.regeneratable = true;
         this.regenerateTimeout = 10;

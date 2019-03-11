@@ -44,6 +44,8 @@ export default class BaseBlock extends Phaser.Sprite {
         if (this.isBlockALive()) {
             this.onHoverOut();
             this.hover = borderSquare(this.game, this);
+            this.hover.position.x = this.x;
+            this.hover.position.y = this.y;
         }
     }
 

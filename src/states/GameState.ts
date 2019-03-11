@@ -5,7 +5,7 @@ import CameraComponent from "../components/CameraComponent";
 import WorldEffects from "../components/EffectsComponent";
 import EffectsComponent from "../components/EffectsComponent";
 import StructuresComponent, { BLOCK_CHEST, BLOCK_COBBLESTONE } from "../components/StructuresComponent";
-import MainTreeStructure from "../entities/structures/MainTreeStructure";
+// import MainTreeStructure from "../entities/structures/MainTreeStructure";
 import ToolbarUi from "../ui/ToolbarUi";
 import MainCookieStructure from "../entities/structures/MainCookieStructure";
 
@@ -40,6 +40,7 @@ class GameState extends Phaser.State {
         // this.ToolbarUi.make();
 
         this.EffectsHook
+            // .debugGrid(true)
             .drawBackgroundGradient()
             .drawBorders();
 
@@ -54,9 +55,7 @@ class GameState extends Phaser.State {
         // this.game.create.
         // cookie.onHover();
 
-        const structures = [
-            new MainCookieStructure(game, 32, 30),
-        ];
+        Container.get(MainCookieStructure).on(30, 32);
 
         //todo: Починить сундук и дерево
 

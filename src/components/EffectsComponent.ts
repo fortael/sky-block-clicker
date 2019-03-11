@@ -111,13 +111,15 @@ export default class EffectsComponent {
 
             for (let x = 0; x < world.width; x += 64) {
                 for (let y = 0; y < world.height; y += 64) {
-                    const text = game.makeText(`x:${x / 64}\r\ny:${64 - y / 64}`, textGroup, 15);
+                    const text = game.makeText(`x:3\r\ny:3`, textGroup, 15);
 
-                    text.x = x;
-                    text.y = y;
+                    text.position.x = x;
+                    text.position.y = y;
                 }
             }
         }
+
+        return this;
     }
 
     public spriteEmitter(

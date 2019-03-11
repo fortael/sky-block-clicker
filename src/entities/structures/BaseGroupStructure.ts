@@ -1,7 +1,19 @@
+import { Inject, Service } from "typedi";
+import StructuresComponent from "../../components/StructuresComponent";
 import Main from "../../Main";
 import BaseBlock from "../blocks/BaseBlock";
 
-export default class BaseGroupStructure extends Phaser.Group {
+interface ITimeOut {
+    counter: number;
+    initial: number;
+}
+
+interface IStructure {
+    make: () => void;
+}
+
+@Service()
+export default abstract class BaseGroupStructure extends Phaser.Group implements IStructure {
 
     protected temporarySprites: Phaser.Sprite[] = [];
 
@@ -13,27 +25,30 @@ export default class BaseGroupStructure extends Phaser.Group {
     protected regenerateTimeout: number = 0;
     private regenerateTimeoutCounter: number = 0;
 
-    constructor(
-        public game: Main,
-        pivotX: number,
-        pivotY: number,
+    protected constructor(
+        @Inject(() => Main) public game: Main,
     ) {
         super(game);
-        this.pivotY = pivotY;
-        this.pivotX = pivotX;
-
         this.make();
         this.game.tick.add(() => this.regen());
         this.onReady();
+    }
 
+    public on(x: number, y: number) {
+        const cords = StructuresComponent.getCordsByXY(x, y);
+
+        this.children.forEach((item: BaseBlock) => {
+            item.position.x = cords.x + item.position.x;
+            item.position.y = -cords.y + item.position.y;
+        });
+
+        return this;
     }
 
     /**
      * Регистрация обсервера
      */
-    public make() {
-        //
-    }
+    public abstract make(): void;
 
     /**
      * Событие при первом создании структуры в мире
@@ -101,12 +116,12 @@ export default class BaseGroupStructure extends Phaser.Group {
     /**
      * Зарегестрировать группу интерактивных блоков внутри объекта
      * @param array
-     * @param onDestroyed - Срабатывает по удалению 1 блока
+     * @param onOneDestroyed - Срабатывает по удалению 1 блока
      * @param onAllDestroyed - Срабатывает, когда все блоки из массива были удалены
      */
-    public observe(
+    public observeDestroy(
         array: Phaser.Sprite[],
-        onDestroyed: (remain: number) => void = () => undefined,
+        onOneDestroyed: (remain: number) => void = () => undefined,
         onAllDestroyed: () => void = () => undefined,
     ) {
         let count = array.length;
@@ -114,8 +129,7 @@ export default class BaseGroupStructure extends Phaser.Group {
 
         array.forEach((item: BaseBlock) => {
             item.events.onKilled.add(() => {
-                count--;
-                onDestroyed(count);
+                onOneDestroyed(count--);
 
                 if (count <= 0) {
                     count = countStart;
@@ -123,13 +137,10 @@ export default class BaseGroupStructure extends Phaser.Group {
                 }
 
                 if (this.isStructureDestroyed()) {
-                    this.destroyStructure(); // вызываем уничтожении, чтобы сбросить счетчик и вызвать эвент
+                    this.destroyStructure();
                 }
             });
 
-           // this.resetAll()
-
-            // this.observable.push(item);
             this.addChild(item);
         });
     }
