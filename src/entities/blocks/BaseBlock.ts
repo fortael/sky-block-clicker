@@ -27,9 +27,9 @@ export default class BaseBlock extends Phaser.Sprite {
         this.smoothed = false;
 
         this.inputEnabled = true;
-        this.events.onInputDown.add(this.onClick, this);
-        this.events.onInputOver.add(this.onHover, this);
-        this.events.onInputOut.add(this.onHoverOut, this);
+        this.events.onInputDown.add(() => this.onClick());
+        this.events.onInputOver.add(() => this.onHover());
+        this.events.onInputOut.add(() => this.onHoverOut());
     }
 
     public isBlockALive() {

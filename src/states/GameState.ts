@@ -4,10 +4,11 @@ import { Container } from "typedi";
 import CameraComponent from "../components/CameraComponent";
 import WorldEffects from "../components/EffectsComponent";
 import EffectsComponent from "../components/EffectsComponent";
-import StructuresComponent, { BLOCK_CHEST, BLOCK_COBBLESTONE } from "../components/StructuresComponent";
-// import MainTreeStructure from "../entities/structures/MainTreeStructure";
-import ToolbarUi from "../ui/ToolbarUi";
+import StructuresComponent from "../components/StructuresComponent";
 import MainCookieStructure from "../entities/structures/MainCookieStructure";
+import SaveChestStructure from "../entities/structures/SaveChestStructure";
+import ToolbarUi from "../ui/ToolbarUi";
+import MainTreeStructure from "../entities/structures/MainTreeStructure";
 
 let moveUp: Phaser.Key,
     moveLeft: Phaser.Key,
@@ -37,8 +38,6 @@ class GameState extends Phaser.State {
 
         Container.get(CameraComponent).centerCamera();
 
-        // this.ToolbarUi.make();
-
         this.EffectsHook
             // .debugGrid(true)
             .drawBackgroundGradient()
@@ -48,20 +47,9 @@ class GameState extends Phaser.State {
             .spawnBaseLevel()
             .spawnIsland1();
 
-        // const coreds = StructuresComponent.getCordsByXY(30, 32);
-        // const cookie = new MainCookieBlock(game, BLOCK_COBBLESTONE, coreds.x, coreds.y);
-
-        // game.add.tween(new MainCookieBlock(game, BLOCK_COBBLESTONE, coreds.x, coreds.y));
-        // this.game.create.
-        // cookie.onHover();
-
         Container.get(MainCookieStructure).on(30, 32);
-
-        //todo: Починить сундук и дерево
-
-        // Container.get(MainTreeStructure).on(35, 32).make();
-
-        // new SaveChestBlock(game, this.StructuresHook.makeTile(BLOCK_CHEST, 37, 32));
+        Container.get(SaveChestStructure).on(37, 32);
+        Container.get(MainTreeStructure).on(35, 32);
 
         // this.EffectsComponent.debugGrid(true);
         // this.EffectsComponent.particlesEmitter();

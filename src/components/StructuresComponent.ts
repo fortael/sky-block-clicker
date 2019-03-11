@@ -140,7 +140,7 @@ export default class StructuresComponent {
 
         for (let x = fromX; x <= toX; x++) {
             for (let y = fromY; y <= toY; y++) {
-                // array.push(this.makeBlock(id, x, y, group));
+                array.push(this.makeBlock(id, x, y, group));
             }
         }
 

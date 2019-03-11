@@ -9,11 +9,11 @@ interface ITimeOut {
 }
 
 interface IStructure {
-    make: () => void;
+    //
 }
 
 @Service()
-export default abstract class BaseGroupStructure extends Phaser.Group implements IStructure {
+export default abstract class BaseGroupStructure extends Phaser.Group {
 
     protected temporarySprites: Phaser.Sprite[] = [];
 
@@ -29,13 +29,15 @@ export default abstract class BaseGroupStructure extends Phaser.Group implements
         @Inject(() => Main) public game: Main,
     ) {
         super(game);
-        this.make();
         this.game.tick.add(() => this.regen());
         this.onReady();
     }
 
     public on(x: number, y: number) {
         const cords = StructuresComponent.getCordsByXY(x, y);
+
+        this.pivotY = y;
+        this.pivotX = x;
 
         this.children.forEach((item: BaseBlock) => {
             item.position.x = cords.x + item.position.x;
@@ -44,11 +46,6 @@ export default abstract class BaseGroupStructure extends Phaser.Group implements
 
         return this;
     }
-
-    /**
-     * Регистрация обсервера
-     */
-    public abstract make(): void;
 
     /**
      * Событие при первом создании структуры в мире
@@ -140,6 +137,16 @@ export default abstract class BaseGroupStructure extends Phaser.Group implements
                     this.destroyStructure();
                 }
             });
+            this.addChild(item);
+        });
+    }
+
+    public observerClick(
+        array: Phaser.Sprite[],
+        onClick: () => void = () => undefined,
+    ) {
+        array.forEach((item: BaseBlock) => {
+            item.onClick = onClick;
 
             this.addChild(item);
         });
