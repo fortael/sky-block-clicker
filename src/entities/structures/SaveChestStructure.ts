@@ -22,6 +22,8 @@ export default class SaveChestStructure extends BaseGroupStructure {
         this.observerClick([ new BaseBlock(game, BLOCK_CHEST, 0, 0) ], () => {
             this.game.store.save();
             this.sound.play();
+
+            this.disable(3);
         });
     }
 }

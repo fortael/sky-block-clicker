@@ -2,6 +2,7 @@ import { Inject, Service } from "typedi";
 import StructuresComponent from "../../components/StructuresComponent";
 import Main from "../../Main";
 import BaseBlock from "../blocks/BaseBlock";
+import { makeText } from "../../utils/phaser";
 
 interface ITimeOut {
     counter: number;
@@ -9,7 +10,7 @@ interface ITimeOut {
 }
 
 interface IStructure {
-    //
+    tick(): void;
 }
 
 @Service()
@@ -22,6 +23,10 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
     protected pivotX: number = 0;
     protected pivotY: number = 0;
 
+    protected disabled: boolean = false;
+    protected enableIn: number = 0;
+    protected enableInText: Phaser.Text;
+
     protected regenerateTimeout: number = 0;
     private regenerateTimeoutCounter: number = 0;
 
@@ -29,7 +34,12 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
         @Inject(() => Main) public game: Main,
     ) {
         super(game);
-        this.game.tick.add(() => this.regen());
+        this.game.tick.add(() => this.tick());
+
+        this.enableInText = makeText(game, "", 25);
+        this.enableInText.strokeThickness = 4;
+        this.enableInText.exists = false;
+
         this.onReady();
     }
 
@@ -38,6 +48,10 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
 
         this.pivotY = y;
         this.pivotX = x;
+
+        this.enableInText.anchor.setTo(0.5, 0.5);
+        this.enableInText.position.x = cords.x + 32;
+        this.enableInText.position.y = cords.y + 32;
 
         this.children.forEach((item: BaseBlock) => {
             item.position.x = cords.x + item.position.x;
@@ -96,7 +110,7 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
     /**
      * Пытается восстановить структуру по таймауту, когда она целиком уничтожена
      */
-    public regen() {
+    public tick() {
         if (this.regeneratable && this.isStructureDestroyed()) {
             if (this.regenerateTimeoutCounter > 0) {
                 this.regenerateTimeoutCounter--;
@@ -105,6 +119,11 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
 
             this.regenerateTimeoutCounter = this.regenerateTimeout;
             this.respawnStructure();
+        }
+
+        if (this.disabled && this.enableIn > 0) {
+            this.enableInText.exists = true;
+            this.enableInText.setText(`${this.enableIn}`);
         }
 
         return this;
@@ -143,12 +162,40 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
 
     public observerClick(
         array: Phaser.Sprite[],
-        onClick: () => void = () => undefined,
+        onClick: (block: BaseBlock) => void = () => undefined,
     ) {
         array.forEach((item: BaseBlock) => {
-            item.onClick = onClick;
+            item.onClick = () => onClick(item);
 
             this.addChild(item);
         });
+    }
+
+    public disable(coolDownSeconds = 0) {
+        this.callAll("disable", null);
+        this.disabled = true;
+        this.enableIn = coolDownSeconds; // ticks
+
+        if (coolDownSeconds > 0) {
+            const interval = setInterval(() => {
+                this.enableIn -= 1;
+            }, 1000);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                this.enable();
+            }, coolDownSeconds * 1000);
+        }
+
+        return this;
+    }
+
+    public enable() {
+        this.callAll("enable", null);
+        this.disabled = false;
+        this.enableIn = 0;
+        this.enableInText.exists = false;
+
+        return this;
     }
 }

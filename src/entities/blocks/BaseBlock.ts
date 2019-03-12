@@ -9,6 +9,7 @@ export default class BaseBlock extends Phaser.Sprite {
     public game: Main;
 
     private hover: Phaser.Graphics = null;
+    private disabled: boolean = false;
 
     constructor(
         game: Main,
@@ -27,21 +28,23 @@ export default class BaseBlock extends Phaser.Sprite {
         this.smoothed = false;
 
         this.inputEnabled = true;
-        this.events.onInputDown.add(() => this.onClick());
+        this.events.onInputDown.add(() => {
+            if (!this.disabled) {
+                this.onClick();
+            }
+        });
         this.events.onInputOver.add(() => this.onHover());
         this.events.onInputOut.add(() => this.onHoverOut());
     }
 
-    public isBlockALive() {
-        return this.alive;
-    }
-
     public onClick() {
-        this.kill();
+        if (!this.disabled) {
+            this.kill();
+        }
     }
 
     public onHover() {
-        if (this.isBlockALive()) {
+        if (this.alive && !this.disabled) {
             this.onHoverOut();
             this.hover = borderSquare(this.game, this);
             this.hover.position.x = this.x;
@@ -53,5 +56,20 @@ export default class BaseBlock extends Phaser.Sprite {
         if (this.hover !== null) {
             this.hover.destroy();
         }
+    }
+
+    public disable() {
+        this.onHoverOut();
+        this.disabled = true;
+        this.alpha = 0.5;
+
+        return this;
+    }
+
+    public enable() {
+        this.disabled = false;
+        this.alpha = 1;
+
+        return this;
     }
 }

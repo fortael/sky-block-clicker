@@ -15,9 +15,8 @@ export default class MainTreeStructure extends BaseGroupStructure {
         protected structures: StructuresComponent,
     ) {
         super(game);
-
         this.regeneratable = true;
-        this.regenerateTimeout = 10;
+        this.regenerateTimeout = 0;
         this.soundWood = this.game.add.sound("wood");
         this.soundLeaf = this.game.add.sound("leaf");
 
@@ -44,5 +43,10 @@ export default class MainTreeStructure extends BaseGroupStructure {
 
             this.game.store.inventory.sapling += reward;
         });
+    }
+
+    public onStructureDestroyed() {
+        super.onStructureDestroyed();
+        this.disable(10);
     }
 }
