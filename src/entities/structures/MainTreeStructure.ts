@@ -16,7 +16,7 @@ export default class MainTreeStructure extends Structure {
     ) {
         super(game);
         this.regeneratable = true;
-        this.regenerateTimeout = 3;
+        this.regenerateTimeout = 5;
         this.soundWood = this.game.add.sound("wood");
         this.soundLeaf = this.game.add.sound("leaf");
 
@@ -31,8 +31,8 @@ export default class MainTreeStructure extends Structure {
 
         // листья
         this.observeDestroy([
-            // ...structures.makeBlocks(BLOCK_LEAVES, -1, 6, +1, 7),
-            // ...structures.makeBlocks(BLOCK_LEAVES, -2, 4, +2, 5),
+            ...structures.makeBlocks(BLOCK_LEAVES, -1, 6, +1, 7),
+            ...structures.makeBlocks(BLOCK_LEAVES, -2, 4, +2, 5),
         ], () => {
             this.soundLeaf.play();
             const reward = this.game.rnd.weightedPick([
@@ -47,6 +47,6 @@ export default class MainTreeStructure extends Structure {
 
     public onStructureDestroyed() {
         super.onStructureDestroyed();
-        this.disable(15);
+        this.disable(5);
     }
 }
