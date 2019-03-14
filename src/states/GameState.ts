@@ -29,8 +29,7 @@ class GameState extends Phaser.State {
     public preload() {
         this.EffectsHook = Container.get(EffectsComponent);
         this.StructuresHook = Container.get(StructuresComponent);
-        this.ToolbarUi = Container.get(ToolbarUi);
-        this.ToolbarUi.make();
+        this.ToolbarUi = Container.get(ToolbarUi).make();
     }
 
     public create() {
@@ -102,8 +101,7 @@ class GameState extends Phaser.State {
     }
 
     public updateStat() {
-        this.ToolbarUi.render();
-        // console.log(1);
+        //
     }
 
     public pause() {

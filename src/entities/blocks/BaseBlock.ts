@@ -61,7 +61,7 @@ export default class BaseBlock extends Phaser.Sprite {
     public disable() {
         this.onHoverOut();
         this.disabled = true;
-        this.alpha = 0.5;
+        this.alpha = 0.3;
 
         return this;
     }

@@ -1,11 +1,11 @@
-import BaseGroupStructure from "./BaseGroupStructure";
+import Structure from "./Structure";
 
 import { Inject, Service } from "typedi";
 import StructuresComponent, { BLOCK_LEAVES, BLOCK_SAPLING, BLOCK_WOOD } from "../../components/StructuresComponent";
 import Main from "../../Main";
 
 Service();
-export default class MainTreeStructure extends BaseGroupStructure {
+export default class MainTreeStructure extends Structure {
 
     protected soundWood: Phaser.Sound;
     protected soundLeaf: Phaser.Sound;
@@ -16,7 +16,7 @@ export default class MainTreeStructure extends BaseGroupStructure {
     ) {
         super(game);
         this.regeneratable = true;
-        this.regenerateTimeout = 0;
+        this.regenerateTimeout = 3;
         this.soundWood = this.game.add.sound("wood");
         this.soundLeaf = this.game.add.sound("leaf");
 
@@ -31,8 +31,8 @@ export default class MainTreeStructure extends BaseGroupStructure {
 
         // листья
         this.observeDestroy([
-            ...structures.makeBlocks(BLOCK_LEAVES, -1, 6, +1, 7),
-            ...structures.makeBlocks(BLOCK_LEAVES, -2, 4, +2, 5),
+            // ...structures.makeBlocks(BLOCK_LEAVES, -1, 6, +1, 7),
+            // ...structures.makeBlocks(BLOCK_LEAVES, -2, 4, +2, 5),
         ], () => {
             this.soundLeaf.play();
             const reward = this.game.rnd.weightedPick([
@@ -47,6 +47,6 @@ export default class MainTreeStructure extends BaseGroupStructure {
 
     public onStructureDestroyed() {
         super.onStructureDestroyed();
-        this.disable(10);
+        this.disable(15);
     }
 }

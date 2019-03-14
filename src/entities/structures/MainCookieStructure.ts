@@ -2,13 +2,13 @@ import { Inject, Service } from "typedi";
 import { BLOCK_COBBLESTONE, BLOCK_WOOD } from "../../components/StructuresComponent";
 import Main from "../../Main";
 import BaseBlock from "../blocks/BaseBlock";
-import BaseGroupStructure from "./BaseGroupStructure";
+import Structure from "./Structure";
 
 /**
  * Главный блок в центре
  */
 @Service()
-export default class MainCookieStructure extends BaseGroupStructure {
+export default class MainCookieStructure extends Structure {
 
     protected sound: Phaser.Sound;
 
@@ -17,7 +17,7 @@ export default class MainCookieStructure extends BaseGroupStructure {
     ) {
         super(game);
         this.regeneratable = true;
-        this.regenerateTimeout = 10;
+        this.regenerateTimeout = 0.5;
         this.sound = this.game.add.sound("click");
 
         this.observeDestroy(

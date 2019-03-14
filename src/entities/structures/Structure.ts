@@ -1,8 +1,9 @@
-import { Inject, Service } from "typedi";
+import { Container, Inject, Service } from "typedi";
 import StructuresComponent from "../../components/StructuresComponent";
 import Main from "../../Main";
 import BaseBlock from "../blocks/BaseBlock";
 import { makeText } from "../../utils/phaser";
+import CoolDownUi from "../../ui/CoolDownUi";
 
 interface ITimeOut {
     counter: number;
@@ -14,7 +15,7 @@ interface IStructure {
 }
 
 @Service()
-export default abstract class BaseGroupStructure extends Phaser.Group {
+export default abstract class Structure extends Phaser.Group {
 
     protected temporarySprites: Phaser.Sprite[] = [];
 
@@ -24,8 +25,7 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
     protected pivotY: number = 0;
 
     protected disabled: boolean = false;
-    protected enableIn: number = 0;
-    protected enableInText: Phaser.Text;
+    protected coolDown: CoolDownUi;
 
     protected regenerateTimeout: number = 0;
     private regenerateTimeoutCounter: number = 0;
@@ -36,9 +36,7 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
         super(game);
         this.game.tick.add(() => this.tick());
 
-        this.enableInText = makeText(game, "", 25);
-        this.enableInText.strokeThickness = 4;
-        this.enableInText.exists = false;
+        this.coolDown = (new CoolDownUi(game)).make();
 
         this.onReady();
     }
@@ -49,9 +47,7 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
         this.pivotY = y;
         this.pivotX = x;
 
-        this.enableInText.anchor.setTo(0.5, 0.5);
-        this.enableInText.position.x = cords.x + 32;
-        this.enableInText.position.y = cords.y + 32;
+        this.coolDown.posTo(cords.x, cords.y);
 
         this.children.forEach((item: BaseBlock) => {
             item.position.x = cords.x + item.position.x;
@@ -72,7 +68,7 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
      * Событие при уничтожении объекта
      */
     public onStructureDestroyed() {
-        this.regenerateTimeoutCounter = this.regenerateTimeout;
+        //
     }
 
     /**
@@ -111,19 +107,16 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
      * Пытается восстановить структуру по таймауту, когда она целиком уничтожена
      */
     public tick() {
+        if (this.disabled && !this.coolDown.isDone()) {
+            this.coolDown.draw();
+        }
+
         if (this.regeneratable && this.isStructureDestroyed()) {
-            if (this.regenerateTimeoutCounter > 0) {
-                this.regenerateTimeoutCounter--;
+            if (+new Date() < this.regenerateTimeoutCounter) {
                 return;
             }
 
-            this.regenerateTimeoutCounter = this.regenerateTimeout;
             this.respawnStructure();
-        }
-
-        if (this.disabled && this.enableIn > 0) {
-            this.enableInText.exists = true;
-            this.enableInText.setText(`${this.enableIn}`);
         }
 
         return this;
@@ -153,6 +146,7 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
                 }
 
                 if (this.isStructureDestroyed()) {
+                    this.startRegeneration();
                     this.destroyStructure();
                 }
             });
@@ -160,7 +154,7 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
         });
     }
 
-    public observerClick(
+    public observeClick(
         array: Phaser.Sprite[],
         onClick: (block: BaseBlock) => void = () => undefined,
     ) {
@@ -171,20 +165,17 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
         });
     }
 
+    /**
+     * Make not available for interact
+     * @param coolDownSeconds
+     */
     public disable(coolDownSeconds = 0) {
-        this.callAll("disable", null);
         this.disabled = true;
-        this.enableIn = coolDownSeconds; // ticks
+        this.coolDown.setCoolDown(coolDownSeconds);
+        this.callAll("disable", null);
 
         if (coolDownSeconds > 0) {
-            const interval = setInterval(() => {
-                this.enableIn -= 1;
-            }, 1000);
-
-            setTimeout(() => {
-                clearInterval(interval);
-                this.enable();
-            }, coolDownSeconds * 1000);
+            setTimeout(() => this.enable(), coolDownSeconds * 1000);
         }
 
         return this;
@@ -193,9 +184,12 @@ export default abstract class BaseGroupStructure extends Phaser.Group {
     public enable() {
         this.callAll("enable", null);
         this.disabled = false;
-        this.enableIn = 0;
-        this.enableInText.exists = false;
+        this.coolDown.draw();
 
         return this;
+    }
+
+    public startRegeneration() {
+        this.regenerateTimeoutCounter = +new Date() + this.regenerateTimeout * 1000;
     }
 }

@@ -2,13 +2,13 @@ import { Inject, Service } from "typedi";
 import { BLOCK_CHEST } from "../../components/StructuresComponent";
 import Main from "../../Main";
 import BaseBlock from "../blocks/BaseBlock";
-import BaseGroupStructure from "./BaseGroupStructure";
+import Structure from "./Structure";
 
 /**
  * Главный блок в центре
  */
 @Service()
-export default class SaveChestStructure extends BaseGroupStructure {
+export default class SaveChestStructure extends Structure {
 
     protected sound: Phaser.Sound;
 
@@ -19,7 +19,7 @@ export default class SaveChestStructure extends BaseGroupStructure {
         this.regeneratable = false;
         this.sound = this.game.add.sound("wood");
 
-        this.observerClick([ new BaseBlock(game, BLOCK_CHEST, 0, 0) ], () => {
+        this.observeClick([ new BaseBlock(game, BLOCK_CHEST, 0, 0) ], () => {
             this.game.store.save();
             this.sound.play();
 

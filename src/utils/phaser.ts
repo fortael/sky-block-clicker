@@ -1,4 +1,4 @@
-export function borderCircle(game: Phaser.Game, sprite: Phaser.Sprite) {
+export function borderCircle(game: Phaser.Game, sprite: Phaser.Sprite | Phaser.Text | Phaser.Graphics) {
     const hover: Phaser.Graphics = game.add.graphics(0, 0);
 
     hover.position.x = sprite.position.x + sprite.width / 2;
@@ -37,7 +37,7 @@ export function makeText(
     const text = game.add.text(0, 0, value, {
         align: "left",
         fill: "#ffffff",
-        font: "Arial",
+        font: "Roboto, sans-serif",
         fontSize,
         stroke: "#000000",
         strokeThickness: 2,

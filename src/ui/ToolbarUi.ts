@@ -17,16 +17,13 @@ export default class ToolbarUi extends TilesGroup {
 
         game.scale.setResizeCallback(debounce(this.pos, 100), this);
 
+        return this;
     }
 
     public pos() {
         this.placeInRow().verticalBottom().horizontalCenter();
 
         return this;
-    }
-
-    public render() {
-        //
     }
 
     public makeItem(id: number, getValue: () => string = () => "") {
