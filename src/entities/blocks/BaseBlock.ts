@@ -44,8 +44,9 @@ export default class BaseBlock extends Phaser.Sprite {
         this.events.onRevived.add(() => this.onRevived());
 
         this.damageSprite = makeTile(game, 49);
-        this.damageSprite.position.x = 0;
-        this.damageSprite.position.y = 0;
+        this.damageSprite.anchor.set(.5, .5);
+        this.damageSprite.position.x = this.width / 4;
+        this.damageSprite.position.y = this.height / 4;
         this.damageSprite.exists = false;
         this.addChild(this.damageSprite);
     }
@@ -61,6 +62,7 @@ export default class BaseBlock extends Phaser.Sprite {
         const health = this.health / this.maxHealth * 100;
 
         this.damageSprite.exists = true;
+        this.damageSprite.scale.set(0.7, 0.7);
 
         if (health < 100) {
             this.damageSprite.loadTexture("sheet", DAMAGE_1);
@@ -68,8 +70,17 @@ export default class BaseBlock extends Phaser.Sprite {
         if (health < 70) {
             this.damageSprite.loadTexture("sheet", DAMAGE_2);
         }
-        if (health < 30) {
+        if (health < 31) {
             this.damageSprite.loadTexture("sheet", DAMAGE_3);
+            this.damageSprite.scale.set(0.8, 0.8);
+        }
+        if (health < 21) {
+            this.damageSprite.loadTexture("sheet", DAMAGE_3);
+            this.damageSprite.scale.set(0.9, 0.9);
+        }
+        if (health < 11) {
+            this.damageSprite.loadTexture("sheet", DAMAGE_3);
+            this.damageSprite.scale.set(1, 1);
         }
 
         return this;
