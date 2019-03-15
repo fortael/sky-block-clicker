@@ -28,6 +28,8 @@ export default class MainCookieStructure extends Structure {
                 this.game.store.inventory.cobblestone += 1;
                 this.sound.play();
             },
+            () => null,
+            10,
         );
     }
 }

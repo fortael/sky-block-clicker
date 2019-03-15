@@ -30,19 +30,24 @@ export default class MainTreeStructure extends Structure {
         });
 
         // листья
-        this.observeDestroy([
-            ...structures.makeBlocks(BLOCK_LEAVES, -1, 6, +1, 7),
-            ...structures.makeBlocks(BLOCK_LEAVES, -2, 4, +2, 5),
-        ], () => {
-            this.soundLeaf.play();
-            const reward = this.game.rnd.weightedPick([
-                0,
-                0,
-                1,
-            ]);
+        this.observeDestroy(
+            [
+                ...structures.makeBlocks(BLOCK_LEAVES, -1, 6, +1, 7),
+                ...structures.makeBlocks(BLOCK_LEAVES, -2, 4, +2, 5),
+            ],
+            () => {
+                this.soundLeaf.play();
+                const reward = this.game.rnd.weightedPick([
+                    0,
+                    0,
+                    1,
+                ]);
 
-            this.game.store.inventory.sapling += reward;
-        });
+                this.game.store.inventory.sapling += reward;
+            },
+            () => undefined,
+            100,
+        );
     }
 
     public onStructureDestroyed() {

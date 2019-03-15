@@ -127,11 +127,13 @@ export default abstract class Structure extends Phaser.Group {
      * @param array
      * @param onOneDestroyed - Срабатывает по удалению 1 блока
      * @param onAllDestroyed - Срабатывает, когда все блоки из массива были удалены
+     * @param healthDamage
      */
     public observeDestroy(
         array: Phaser.Sprite[],
         onOneDestroyed: (remain: number) => void = () => undefined,
         onAllDestroyed: () => void = () => undefined,
+        healthDamage: number = 30,
     ) {
         let count = array.length;
         const countStart = array.length;
@@ -150,6 +152,11 @@ export default abstract class Structure extends Phaser.Group {
                     this.destroyStructure();
                 }
             });
+
+            if (healthDamage) {
+                item.healthDamage = healthDamage;
+            }
+
             this.addChild(item);
         });
     }

@@ -17,6 +17,10 @@ export const BLOCK_LEAVES = 7;
 export const BLOCK_CHEST = 8;
 export const BLOCK_SAPLING = 9;
 
+export const DAMAGE_1 = 48;
+export const DAMAGE_2 = 49;
+export const DAMAGE_3 = 50;
+
 @Service()
 export default class StructuresComponent {
 
