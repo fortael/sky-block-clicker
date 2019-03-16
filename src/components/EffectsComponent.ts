@@ -4,8 +4,6 @@ import Main from "../Main";
 @Service()
 export default class EffectsComponent {
 
-    protected objects: Phaser.Group[] = [];
-
     constructor(
         @Inject(() => Main) protected game: Main,
     ) {}
@@ -74,7 +72,7 @@ export default class EffectsComponent {
         const { game } = this;
         const { world } = game;
 
-        const maxParticles = 100 / game.resolution;
+        const maxParticles = 1000 / game.resolution;
         const emitter = game.add.emitter(world.centerX, world.centerY, maxParticles);
 
         emitter.makeParticles("star");
@@ -94,8 +92,10 @@ export default class EffectsComponent {
         emitter.minParticleSpeed = new Phaser.Point(3, 3);
 
         emitter.forEach((particle: Phaser.Particle) => {
-            particle.tint = game.rnd.weightedPick([0xffffff, 0xffffff, 0xffffff]);
+            particle.tint = game.rnd.weightedPick([0xffffff, 0xffff00, 0xff00ff]);
         }, this);
+
+        return this;
     }
 
     public debugGrid(cords: boolean = false) {

@@ -1,28 +1,22 @@
 import Main from "../Main";
 
-import { Container } from "typedi";
+import { Container, Service } from "typedi";
 import CameraComponent from "../components/CameraComponent";
 import WorldEffects from "../components/EffectsComponent";
 import EffectsComponent from "../components/EffectsComponent";
 import StructuresComponent from "../components/StructuresComponent";
 import MainCookieStructure from "../entities/structures/MainCookieStructure";
+import MainTreeStructure from "../entities/structures/MainTreeStructure";
 import SaveChestStructure from "../entities/structures/SaveChestStructure";
 import ToolbarUi from "../ui/ToolbarUi";
-import MainTreeStructure from "../entities/structures/MainTreeStructure";
-
-let moveUp: Phaser.Key,
-    moveLeft: Phaser.Key,
-    moveRight: Phaser.Key,
-    moveDown: Phaser.Key,
-    center: Phaser.Key,
-    shift: Phaser.Key;
-let zoomIn: Phaser.Key, zoomOut: Phaser.Key;
 
 class GameState extends Phaser.State {
 
     public StructuresHook: StructuresComponent;
     public EffectsHook: WorldEffects;
     public ToolbarUi: ToolbarUi;
+
+    public Camera: CameraComponent;
 
     public game: Main;
 
@@ -33,13 +27,12 @@ class GameState extends Phaser.State {
     }
 
     public create() {
-        const game = this.game;
-
-        Container.get(CameraComponent).centerCamera();
+        this.Camera = Container.get(CameraComponent).centerCamera();
 
         this.EffectsHook
             // .debugGrid(true)
             .drawBackgroundGradient()
+            // .particlesEmitter()
             .drawBorders();
 
         this.StructuresHook
@@ -50,19 +43,6 @@ class GameState extends Phaser.State {
         Container.get(SaveChestStructure).on(37, 32);
         Container.get(MainTreeStructure).on(35, 32);
 
-        // this.EffectsComponent.debugGrid(true);
-        // this.EffectsComponent.particlesEmitter();
-
-        moveUp = game.input.keyboard.addKey(Phaser.Keyboard.W);
-        moveDown = game.input.keyboard.addKey(Phaser.Keyboard.S);
-        moveLeft = game.input.keyboard.addKey(Phaser.Keyboard.A);
-        moveRight = game.input.keyboard.addKey(Phaser.Keyboard.D);
-        shift = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
-        center = game.input.keyboard.addKey(Phaser.Keyboard.C);
-
-        zoomIn = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-        zoomOut = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-
         this.game.tick.active = true;
         this.game.time.events.repeat(Phaser.Timer.SECOND / 10, Infinity, () => {
             this.game.tick.dispatch();
@@ -70,34 +50,8 @@ class GameState extends Phaser.State {
         }, this);
     }
 
-    // todo: вынести в CameraComponent
     public update(game: Main) {
-        // this.game.debug.cameraInfo(this.camera, 100, 100);
-        // this.game.debug.text(this.game.time.fps, 20, 20);
-
-        const moveStep = shift.isDown ? 30 : 10;
-        const zoomStep = 0.05;
-
-        if (center.isDown) {
-            Container.get(CameraComponent).centerCamera();
-        }
-
-        if (moveDown.isDown) {
-            this.camera.y += moveStep;
-        }
-        if (moveUp.isDown) {
-            this.camera.y -= moveStep;
-        }
-        if (moveLeft.isDown) {
-            this.camera.x -= moveStep;
-        }
-        if (moveRight.isDown) {
-            this.camera.x += moveStep;
-        }
-
-        // this.Planets.forEach((item) => {
-        //     item.animate()
-        // });
+        this.Camera.update();
     }
 
     public updateStat() {

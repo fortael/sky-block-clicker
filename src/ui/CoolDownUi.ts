@@ -1,6 +1,6 @@
 import { Inject, Service } from "typedi";
 import Main from "../Main";
-import { borderCircle, makeText } from "../utils/phaser";
+import { makeText } from "../utils/phaser";
 
 @Service()
 export default class CoolDownUi extends Phaser.Group {
@@ -17,12 +17,12 @@ export default class CoolDownUi extends Phaser.Group {
         const { game } = this;
 
         this.text = makeText(game, "", 20);
-        this.text.strokeThickness = 4;
+        this.text.strokeThickness = 1;
         this.text.exists = false;
         this.value = null;
 
         this.layout = game.add.graphics(0, 0);
-        this.layout.lineStyle(5, 0xffffff, 0.8);
+        // this.layout.lineStyle(5, 0xffffff, 0.8);
         this.layout.beginFill(0x000000, 0.4);
         this.layout.drawCircle(0, 0, 55);
         this.layout.exists = false;

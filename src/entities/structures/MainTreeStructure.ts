@@ -4,7 +4,7 @@ import { Inject, Service } from "typedi";
 import StructuresComponent, { BLOCK_LEAVES, BLOCK_SAPLING, BLOCK_WOOD } from "../../components/StructuresComponent";
 import Main from "../../Main";
 
-Service();
+@Service()
 export default class MainTreeStructure extends Structure {
 
     protected soundWood: Phaser.Sound;
