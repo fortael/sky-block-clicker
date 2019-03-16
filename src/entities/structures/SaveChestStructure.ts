@@ -19,10 +19,11 @@ export default class SaveChestStructure extends Structure {
         this.regeneratable = false;
         this.sound = this.game.add.sound("wood");
 
-        this.observeClick([ new BaseBlock(game, BLOCK_CHEST, 0, 0) ], () => {
+        this.observe([
+            new BaseBlock(game, BLOCK_CHEST),
+        ]).click(() => {
             this.game.store.save();
             this.sound.play();
-
             this.disable(3);
         });
     }

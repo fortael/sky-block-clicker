@@ -1,9 +1,9 @@
 import { Container, Inject, Service } from "typedi";
 import StructuresComponent from "../../components/StructuresComponent";
 import Main from "../../Main";
-import BaseBlock from "../blocks/BaseBlock";
-import { makeText } from "../../utils/phaser";
+import Observer from "../../Observer";
 import CoolDownUi from "../../ui/CoolDownUi";
+import BaseBlock from "../blocks/BaseBlock";
 
 interface ITimeOut {
     counter: number;
@@ -123,51 +123,11 @@ export default abstract class Structure extends Phaser.Group {
     }
 
     /**
-     * Зарегестрировать группу интерактивных блоков внутри объекта
+     * Зарегестрировать группу блоков внутри структуру
      * @param array
-     * @param onOneDestroyed - Срабатывает по удалению 1 блока
-     * @param onAllDestroyed - Срабатывает, когда все блоки из массива были удалены
-     * @param healthDamage
      */
-    public observeDestroy(
-        array: Phaser.Sprite[],
-        onOneDestroyed: (remain: number) => void = () => undefined,
-        onAllDestroyed: () => void = () => undefined,
-        healthDamage: number = 30,
-    ) {
-        let count = array.length;
-        const countStart = array.length;
-
-        array.forEach((item: BaseBlock) => {
-            item.events.onKilled.add(() => {
-                onOneDestroyed(count--);
-
-                if (count <= 0) {
-                    count = countStart;
-                    onAllDestroyed();
-                }
-
-                if (this.isStructureDestroyed()) {
-                    this.startRegeneration();
-                    this.destroyStructure();
-                }
-            });
-
-            if (healthDamage) {
-                item.healthDamage = healthDamage;
-            }
-
-            this.addChild(item);
-        });
-    }
-
-    public observeClick(
-        array: Phaser.Sprite[],
-        onClick: (block: BaseBlock) => void = () => undefined,
-    ) {
-        array.forEach((item: BaseBlock) => {
-            item.onClick = () => onClick(item);
-
+    public observe(array: BaseBlock[]) {
+        return new Observer(this, array, (item: BaseBlock) => {
             this.addChild(item);
         });
     }

@@ -20,16 +20,11 @@ export default class MainCookieStructure extends Structure {
         this.regenerateTimeout = 0.5;
         this.sound = this.game.add.sound("click");
 
-        this.observeDestroy(
-            [
-                new BaseBlock(game, BLOCK_COBBLESTONE, 0, 0),
-            ],
-            () => {
-                this.game.store.inventory.cobblestone += 1;
-                this.sound.play();
-            },
-            () => null,
-            10,
-        );
+        this.observe([
+            new BaseBlock(game, BLOCK_COBBLESTONE, 0, 0),
+        ]).destroyed(() => {
+            this.game.store.inventory.cobblestone += 1;
+            this.sound.play();
+        }).damage(() => 10);
     }
 }

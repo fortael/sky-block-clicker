@@ -14,13 +14,13 @@ export default class BaseBlock extends Phaser.Sprite {
 
     private hover: Phaser.Graphics = null;
     private disabled: boolean = false;
-    private damageSprite: Phaser.Sprite;
+    private readonly damageSprite: Phaser.Sprite;
 
     constructor(
         game: Main,
         id: number,
-        x: number,
-        y: number,
+        x: number = 0,
+        y: number = 0,
     ) {
         super(game, x, y, "sheet", id - 1);
 

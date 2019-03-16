@@ -20,34 +20,23 @@ export default class MainTreeStructure extends Structure {
         this.soundWood = this.game.add.sound("wood");
         this.soundLeaf = this.game.add.sound("leaf");
 
-        this.observeDestroy([
+        this.observe([
             ...structures.makeBlocks(BLOCK_WOOD, 0, 0, 0, 5),
-        ], () => {
+        ]).destroyed(() => {
             this.game.store.inventory.wood += 1;
             this.soundWood.play();
-        }, () => {
+        }).allDestroyed(() => {
             this.temporarySprites.push(this.structures.makeTile(BLOCK_SAPLING, this.pivotX, this.pivotY));
         });
 
-        // листья
-        this.observeDestroy(
-            [
-                ...structures.makeBlocks(BLOCK_LEAVES, -1, 6, +1, 7),
-                ...structures.makeBlocks(BLOCK_LEAVES, -2, 4, +2, 5),
-            ],
-            () => {
-                this.soundLeaf.play();
-                const reward = this.game.rnd.weightedPick([
-                    0,
-                    0,
-                    1,
-                ]);
-
-                this.game.store.inventory.sapling += reward;
-            },
-            () => undefined,
-            100,
-        );
+        // Листья
+        this.observe([
+            ...structures.makeBlocks(BLOCK_LEAVES, -1, 6, +1, 7),
+            ...structures.makeBlocks(BLOCK_LEAVES, -2, 4, +2, 5),
+        ]).destroyed(() => {
+            this.soundLeaf.play();
+            this.game.store.inventory.sapling += this.game.rnd.weightedPick([ 0, 0, 1 ]);
+        }).damage(() => 100);
     }
 
     public onStructureDestroyed() {
